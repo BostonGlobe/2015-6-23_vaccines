@@ -5,6 +5,7 @@
     "babel-core": "^5.6.4",
     "babel-loader": "^5.1.4",
     "browser-sync": "^2.7.12",
+    "d3": "^3.5.5",
     "del": "^1.2.0",
     "dsv-loader": "^1.0.0",
     "globe-iframe-resizer": "0.0.2",
@@ -21,11 +22,13 @@
     "gulp-smoosher": "0.0.7",
     "gulp-stylus": "^2.0.5",
     "gulp-uglify": "^1.2.0",
+    "json-loader": "^0.5.2",
     "node-libs-browser": "^0.5.2",
     "pym.js": "^0.4.3",
     "request": "^2.58.0",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.1.1",
+    "topojson": "^1.6.19",
     "webpack": "^1.9.11",
     "webpack-stream": "^2.0.0"
   }
