@@ -7,14 +7,60 @@ output:
 ---
 
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
-# load libraries here
+library(stringr)
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(reshape2)
+library(lubridate)
+setwd("~/Documents/dev/vaccines/data")
 ```
 
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE, cache=TRUE}
-# load data here
-rawdata <- read.csv('../data.csv', strip.white=TRUE, stringsAsFactors=FALSE, row.names=NULL)
+rawdata <- read.csv('input/kinder_rates.csv', stringsAsFactors=F)
+
+# prepare data
+data <- rawdata %>%
+  select(School.Name, City, LAT, LNG, Exemption) %>%
+  mutate(Exemption = gsub('%', '', Exemption)) %>%
+  mutate(Exemption = str_trim(Exemption, side='both')) %>%
+  filter(!(Exemption %in% c('', '*'))) %>%
+  mutate(Exemption = as.numeric(Exemption))
+
+write.csv(data, 'output/kinder_rates.csv', row.names=F)
 ```
 
-```{r, results='asis', fig.width=10, fig.height=4, warning=FALSE, message=FALSE}
-# make graphic here
+****
+Let's make a dot map.
+```{r, results='asis', fig.width=10, fig.height=6, warning=FALSE, message=FALSE}
+data %>%
+  ggplot(aes(LNG, LAT)) +
+  geom_point(aes(size=Exemption, colour=Exemption)) +
+  scale_size_area() +
+  scale_colour_gradient(low='white', high='red', breaks=c(0, 5, 30)) +
+  theme(
+    panel.grid.major=element_blank(),
+    panel.grid.minor=element_blank(),
+    panel.background=element_rect(fill='black')
+  )
 ```
+
+****
+Let's plot all the schools.
+```{r, results='asis', fig.width=10, fig.height=6, warning=FALSE, message=FALSE}
+data %>%
+  arrange(Exemption) %>%
+  mutate(row = row_number()) %>%
+  ggplot(aes(row, Exemption)) +
+  geom_bar(stat='identity') +
+  xlab('school')
+```
+
+****
+Let's plot the exemption distribution.
+```{r, results='asis', fig.width=10, fig.height=6, warning=FALSE, message=FALSE}
+data %>%
+  ggplot(aes(Exemption)) +
+  geom_histogram()
+```
+This shows the majority of schools have exemption rates under 10%. The median Exemption is 0%.
