@@ -19,6 +19,7 @@ setwd("~/Documents/dev/vaccines/data")
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE, cache=TRUE}
 rawdata <- read.csv('input/kinder_rates.csv', stringsAsFactors=F)
 
+
 # prepare data
 data <- rawdata %>%
   select(School.Name, City, LAT, LNG, Exemption) %>%
@@ -26,6 +27,8 @@ data <- rawdata %>%
   mutate(Exemption = str_trim(Exemption, side='both')) %>%
   filter(!(Exemption %in% c('', '*'))) %>%
   mutate(Exemption = as.numeric(Exemption))
+
+temp <- filter(data, Exemption > 0)
 
 write.csv(data, 'output/kinder_rates.csv', row.names=F)
 ```

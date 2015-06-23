@@ -9,7 +9,14 @@ globeIframe(onPymParentResize);
 
 var ma = require('../../map/output/ma.json');
 var state = topojson.feature(ma, ma.objects.MA);
-var schools = topojson.feature(ma, ma.objects.kinder_rates).features;
+var schools = topojson.feature(ma, ma.objects.kinder_rates).features
+	.filter(d => +d.properties.Exemption > 5);
+
+var log = function(s) {
+	console.log(JSON.stringify(s, null, 4));
+};
+
+log(schools);
 
 // make large map
 function makeLargeMap() {
@@ -36,7 +43,10 @@ function makeLargeMap() {
 
 	// add state g
 	var stateG = svg.append('g')
-		.attr('class', 'state');
+		.attr({
+			'class': 'state',
+			transform: 'translate(-10, -10)'
+		});
 
 	// add state outline
 	stateG.append('path')
@@ -48,15 +58,22 @@ function makeLargeMap() {
 
 	// add schools g
 	var schoolsG = svg.append('g')
-		.attr('class', 'schools');
+		.attr({
+			'class': 'schools',
+			transform: 'translate(-10, -10)'
+		});
 
 	// add schools
+	var radiusScale = d3.scale.sqrt()
+		.domain([0, d3.max(schools, d => +d.properties.Exemption)])
+		.range([0, 20]);
+
 	schoolsG.selectAll('circle')
 		.data(schools)
 		.enter().append('circle')
 		.attr({
 			transform: d => `translate(${path.centroid(d)})`,
-			r: 1
+			r: d => radiusScale(+d.properties.Exemption)
 		});
 }
 

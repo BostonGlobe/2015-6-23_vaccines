@@ -1,14 +1,20 @@
 // to use images in assets folder:
 // ex: background-image url($assets-path + 'filename.jpg')
 
+$colors_highlight_red = #ED1C24
+$colors_map_3 = #E7E6DD
+$colors_bw_4 = #DEDFE0
+
 .large-map-wrapper
 	svg
 		g.state
 			path
-				fill none
-				stroke black
+				fill $colors_map_3
+				fill-opacity 0.5
+				// stroke black
 				
 		g.schools
 			circle
-				fill red
-				stroke blue
+				fill darken($colors_highlight_red, 25%)
+				fill-opacity 0.5
+				stroke @fill

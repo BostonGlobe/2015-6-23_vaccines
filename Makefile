@@ -49,7 +49,8 @@ map_process:
 	# convert to topojson
 	cd map/output; topojson \
 		--width 800 \
-		--margin 10 \
+		--margin 20 \
 		-s 5 \
+		-p \
 		-o ma.json \
 		-- MA.shp kinder_rates.shp

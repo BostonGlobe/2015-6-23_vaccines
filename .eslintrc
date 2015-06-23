@@ -5,8 +5,9 @@
 		"es6": true
 	},
 	"rules": {
+		"global-strict": [2, "always"],
+		"no-console": 0,
 		"quotes": [2, "single"],
-		"strict": [0, "global"],
-		"global-strict": [2, "always"]
+		"strict": [0, "global"]
 	}
 }
