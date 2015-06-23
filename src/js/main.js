@@ -1,14 +1,14 @@
-'use strict';
-var globeIframe = require('globe-iframe-resizer');
+// 'use strict';
+// var globeIframe = require('globe-iframe-resizer');
 
-// This fires when the parent of iframe resizes
-var onPymParentResize = function(width) {};
+// // This fires when the parent of iframe resizes
+// var onPymParentResize = function(width) {};
 
-globeIframe(onPymParentResize);
+// globeIframe(onPymParentResize);
 
-// graphic functions
-var init = function() {
-	if (window.console && console.log) console.log('-- init globe graphic --');
-};
+// // graphic functions
+// var init = function() {
+// 	if (window.console && console.log) console.log('-- init globe graphic --');
+// };
 
-init();
+// init();
