@@ -1,0 +1,18 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": ".",
+			"folder_exclude_patterns": [
+				"node_modules",
+				"2015-6-23_vaccines_cache",
+				"2015-6-23_vaccines_files"
+			],
+			"file_exclude_patterns": [
+				"globegraphic.sublime-project",
+				"2015-6-23_vaccines.html"
+			]
+		}
+	]
+}
