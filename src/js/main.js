@@ -3,14 +3,21 @@
 var d3 = require('d3');
 var topojson = require('topojson');
 var globeIframe = require('globe-iframe-resizer');
+var chroma = require('chroma-js');
+var _ = require('lodash');
 
 var onPymParentResize = function() {};
 globeIframe(onPymParentResize);
 
 var ma = require('../../map/output/ma.json');
 var state = topojson.feature(ma, ma.objects.MA);
-var schools = topojson.feature(ma, ma.objects.kinder_rates).features
-	.filter(d => +d.properties.Exemption > 5);
+var schools = _(topojson.feature(ma, ma.objects.kinder_rates).features)
+	.forEach(function(d) {
+		d.properties.Exemption = +d.properties.Exemption;
+	})
+	.filter(d => d.properties.Exemption > 1)
+	.sortBy(d => d.properties.Exemption)
+	.value();
 
 var log = function(s) {
 	console.log(JSON.stringify(s, null, 4));
@@ -63,17 +70,37 @@ function makeLargeMap() {
 			transform: 'translate(-10, -10)'
 		});
 
-	// add schools
+	// construct schools radius scale
 	var radiusScale = d3.scale.sqrt()
-		.domain([0, d3.max(schools, d => +d.properties.Exemption)])
+		.domain([0, d3.max(schools, d => d.properties.Exemption)])
 		.range([0, 20]);
 
+	var opacityScale = d3.scale.linear()
+		.domain([0, d3.max(schools, d => d.properties.Exemption)])
+		.range([0.5, 0.8]);
+
+
+	// construct schools color scale
+	// var RED = '#ED1C24';
+	// var bezierColors = chroma.interpolate.bezier([chroma(RED).brighten(75), RED]);
+	// var bezierColors = chroma.interpolate.bezier(['#FFCE7B', '#F79759', '#DC6951', '#ED1C24']);
+
+	// var colorScale = chroma.scale(bezierColors)
+	// 	.domain([0, d3.max(schools, d => d.properties.Exemption)])
+	// 	.correctLightness(true);
+
+	// add schools
 	schoolsG.selectAll('circle')
 		.data(schools)
 		.enter().append('circle')
 		.attr({
 			transform: d => `translate(${path.centroid(d)})`,
-			r: d => radiusScale(+d.properties.Exemption)
+			r: d => radiusScale(d.properties.Exemption)
+		})
+		.style({
+			// opacity: d => opacityScale(d.properties.Exemption)
+			// fill: d => colorScale(d.properties.Exemption),
+			// sstroke: d => colorScale(d.properties.Exemption).darken(15)
 		});
 }
 
