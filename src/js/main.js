@@ -1,14 +1,68 @@
-// 'use strict';
-// var globeIframe = require('globe-iframe-resizer');
+'use strict';
 
-// // This fires when the parent of iframe resizes
-// var onPymParentResize = function(width) {};
+var d3 = require('d3');
+var topojson = require('topojson');
+var globeIframe = require('globe-iframe-resizer');
 
-// globeIframe(onPymParentResize);
+var onPymParentResize = function() {};
+globeIframe(onPymParentResize);
 
-// // graphic functions
-// var init = function() {
-// 	if (window.console && console.log) console.log('-- init globe graphic --');
-// };
+var ma = require('../../map/output/ma.json');
+var state = topojson.feature(ma, ma.objects.MA);
+var schools = topojson.feature(ma, ma.objects.kinder_rates).features;
 
-// init();
+// make large map
+function makeLargeMap() {
+
+	var wrapper = document.querySelector('.large-map-wrapper');
+
+	// empty wrapper
+	wrapper.innerHTML = '';
+
+	// create a null projection
+	var path = d3.geo.path().projection(null);
+
+	// calculate aspect ratio of state outline
+	var bounds = path.bounds(state);
+	// var deltaX = bounds[1][0] - bounds[0][0];
+	// var deltaY = bounds[1][1] - bounds[0][1];
+	// var ratio = deltaX / deltaY;
+
+	// create the map svg
+	var svg = d3.select('.large-map-wrapper').append('svg')
+		.attr({
+			viewBox: `0 0 ${bounds[1][0]} ${bounds[1][1]}`
+		});
+
+	// add state g
+	var stateG = svg.append('g')
+		.attr('class', 'state');
+
+	// add state outline
+	stateG.append('path')
+		.datum(state)
+		.attr({
+			'class': 'land',
+			'd': path
+		});
+
+	// add schools g
+	var schoolsG = svg.append('g')
+		.attr('class', 'schools');
+
+	// add schools
+	schoolsG.selectAll('circle')
+		.data(schools)
+		.enter().append('circle')
+		.attr({
+			transform: d => `translate(${path.centroid(d)})`,
+			r: 1
+		});
+}
+
+function resize() {
+	makeLargeMap();
+}
+
+window.addEventListener('resize', resize);
+resize();
