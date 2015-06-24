@@ -4,6 +4,14 @@ This project was generated with [slush-globegraphic](https://github.com/BostonGl
 
 Please note: do not reproduce Boston Globe logos or fonts without written permission.
 
+## TODO
+
+### large map
+- add shaded relief
+- add scale
+- add text annotations
+- animate bubbles
+
 ## Install
 
 - `npm install`
