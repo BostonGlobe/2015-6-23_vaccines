@@ -3,7 +3,6 @@
 var d3 = require('d3');
 var topojson = require('topojson');
 var globeIframe = require('globe-iframe-resizer');
-var chroma = require('chroma-js');
 var _ = require('lodash');
 
 var onPymParentResize = function() {};
