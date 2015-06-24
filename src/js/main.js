@@ -75,11 +75,6 @@ function makeLargeMap() {
 		.domain([0, d3.max(schools, d => d.properties.Exemption)])
 		.range([0, 20]);
 
-	// var opacityScale = d3.scale.linear()
-	// 	.domain([0, d3.max(schools, d => d.properties.Exemption)])
-	// 	.range([0.35, 0.35]);
-		// .range([0.25, 0.75]);
-
 	// add schools
 	schoolsG.selectAll('circle')
 		.data(schools)
@@ -88,9 +83,6 @@ function makeLargeMap() {
 			transform: d => `translate(${path.centroid(d)})`,
 			r: d => radiusScale(d.properties.Exemption)
 		});
-		// .style({
-		// 	'fill-opacity': d => opacityScale(d.properties.Exemption)
-		// });
 }
 
 function resize() {
