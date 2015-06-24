@@ -14,7 +14,6 @@ var schools = _(topojson.feature(ma, ma.objects.kinder_rates).features)
 	.forEach(function(d) {
 		d.properties.Exemption = +d.properties.Exemption;
 	})
-	.filter(d => d.properties.Exemption > 1)
 	.sortBy(d => d.properties.Exemption)
 	.value();
 
