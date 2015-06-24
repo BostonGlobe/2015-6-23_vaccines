@@ -24,13 +24,14 @@ map_process:
 	cd map/output; mapshaper \
 		../input/TOWNSSURVEY_POLYM.shp \
 		-dissolve \
-		-o MA_temp.shp
+		-simplify 0.5% \
+		-o state.shp
 
-	# project towns to EPSG:26986
-	cd map/output; ogr2ogr \
-		-t_srs 'EPSG:26986' \
-		MA.shp \
-		MA_temp.shp
+	# # project towns to EPSG:26986
+	# cd map/output; ogr2ogr \
+	# 	-t_srs 'EPSG:26986' \
+	# 	MA.shp \
+	# 	MA_temp.shp
 
 	# convert kinder_rates csv to geojson
 	cd map/output; csvjson \
@@ -38,19 +39,24 @@ map_process:
 		--lat LAT \
 		--lon LNG \
 		-i 4 \
-		> kinder_rates.json
+		> schools.json
 
-	# project kinder rates to EPSG:26986
-	cd map/output; ogr2ogr \
-		-t_srs 'EPSG:26986' \
-		kinder_rates.shp \
-		kinder_rates.json
+	# # project kinder rates to EPSG:26986
+	# cd map/output; ogr2ogr \
+	# 	-t_srs 'EPSG:26986' \
+	# 	kinder_rates.shp \
+	# 	kinder_rates.json
+
+	# # convert to topojson
+	# cd map/output; topojson \
+	# 	--width 800 \
+	# 	-s 5 \
+	# 	-p \
+	# 	-o ma.json \
+	# 	-- MA.shp kinder_rates.shp
 
 	# convert to topojson
 	cd map/output; topojson \
-		--width 800 \
-		--margin 20 \
-		-s 5 \
-		-p \
 		-o ma.json \
-		-- MA.shp kinder_rates.shp
+		-p \
+		-- state.shp schools.json
