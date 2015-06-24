@@ -1,26 +1,44 @@
 'use strict';
 
+// Load libraries.
 var d3 = require('d3');
 
+// This will hold the scenes array object.
 var SCENES;
-var currentSceneIndex = 0;
 
+// Start before 0, since 0 is the first scene.
+var currentSceneIndex = -1;
+
+// Utility function.
 function log(s) {
 	console.log(JSON.stringify(s, null, 4));
 }
 
+// This is used to trigger native events.
+var events = {};
+
+// This will draw the scene in question.
 function drawScene(sceneIndex) {
-	log(`drawing scene ${sceneIndex}`);
+	document.querySelector('.scene-maker.chartScene').innerHTML = `drawing scene ${sceneIndex}`;
 }
 
+// Check if we're at the end.
 function atEnd() {
 	return currentSceneIndex === SCENES.length - 1;
 }
 
+// Check if we're at the beginning.
 function atBeginning() {
 	return currentSceneIndex === 0;
 }
 
+// This creates native events like 'click'.
+function createEvents() {
+	events.click = document.createEvent('MouseEvent');
+	events.click.initEvent('click', true, true);
+}
+
+// This will make buttons. Call this once.
 function makeButtons() {
 
 	document.querySelector('.scene-maker.buttons').innerHTML = `
@@ -29,6 +47,7 @@ function makeButtons() {
 	`;
 }
 
+// This will wire buttons to their event handlers.
 function wireButtons() {
 
 	// Get buttons.
@@ -78,8 +97,13 @@ module.exports = {
 
 		SCENES = scenes;
 
+		createEvents();
 		makeButtons();
 		wireButtons();
+	},
+
+	start: function() {
+		document.querySelector('.scene-maker.buttons button.next').dispatchEvent(events.click);
 	}
 
 };

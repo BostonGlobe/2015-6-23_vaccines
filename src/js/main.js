@@ -1,10 +1,13 @@
 'use strict';
 
 var sceneMaker = require('./sceneMaker');
-var chartScenes = require('./chartScenes');
+var scenes = require('./scenes');
 
-// wire buttons
-sceneMaker.init(chartScenes);
+// This will create and wire the buttons.
+sceneMaker.init(scenes);
+
+// Draw the first scene.
+sceneMaker.start();
 
 
 
