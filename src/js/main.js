@@ -75,19 +75,10 @@ function makeLargeMap() {
 		.domain([0, d3.max(schools, d => d.properties.Exemption)])
 		.range([0, 20]);
 
-	var opacityScale = d3.scale.linear()
-		.domain([0, d3.max(schools, d => d.properties.Exemption)])
-		.range([0.5, 0.8]);
-
-
-	// construct schools color scale
-	// var RED = '#ED1C24';
-	// var bezierColors = chroma.interpolate.bezier([chroma(RED).brighten(75), RED]);
-	// var bezierColors = chroma.interpolate.bezier(['#FFCE7B', '#F79759', '#DC6951', '#ED1C24']);
-
-	// var colorScale = chroma.scale(bezierColors)
+	// var opacityScale = d3.scale.linear()
 	// 	.domain([0, d3.max(schools, d => d.properties.Exemption)])
-	// 	.correctLightness(true);
+	// 	.range([0.35, 0.35]);
+		// .range([0.25, 0.75]);
 
 	// add schools
 	schoolsG.selectAll('circle')
@@ -96,12 +87,10 @@ function makeLargeMap() {
 		.attr({
 			transform: d => `translate(${path.centroid(d)})`,
 			r: d => radiusScale(d.properties.Exemption)
-		})
-		.style({
-			// opacity: d => opacityScale(d.properties.Exemption)
-			// fill: d => colorScale(d.properties.Exemption),
-			// sstroke: d => colorScale(d.properties.Exemption).darken(15)
 		});
+		// .style({
+		// 	'fill-opacity': d => opacityScale(d.properties.Exemption)
+		// });
 }
 
 function resize() {
