@@ -93,7 +93,7 @@ function wireButtons() {
 
 module.exports = {
 
-	init: function(scenes) {
+	init(scenes) {
 
 		SCENES = scenes;
 
@@ -102,7 +102,9 @@ module.exports = {
 		wireButtons();
 	},
 
-	start: function() {
+	// On start, click 'Next'.
+	start() {
+
 		document.querySelector('.scene-maker.buttons button.next').dispatchEvent(events.click);
 	}
 
