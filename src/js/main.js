@@ -1,21 +1,27 @@
 'use strict';
 
+// Include various libraries.
+var _ = require('lodash');
+var globeIframe = require('globe-iframe-resizer');
 var sceneMaker = require('./sceneMaker');
 var scenes = require('./scenes');
 
-// This will create and wire the buttons.
+// Make pym resize parent window.
+var onPymParentResize = function() {};
+globeIframe(onPymParentResize);
+
+// Create and wire the buttons.
 sceneMaker.init(scenes);
 
-// Draw the first scene.
-sceneMaker.start();
+// Debounce resizing calls.
+var resize = _.debounce(function() {
+	sceneMaker.resize();
+}, 200);
 
-
-
-
-function resize() {
-	// on resize, draw the selected chart and scene
-}
+// Handle resize event.
 window.addEventListener('resize', resize);
+
+// Call resize once to start the whole thing.
 resize();
 
 
@@ -110,7 +116,6 @@ resize();
 // var d3 = require('d3');
 // var topojson = require('topojson');
 // var globeIframe = require('globe-iframe-resizer');
-// var _ = require('lodash');
 
 // var onPymParentResize = function() {};
 // globeIframe(onPymParentResize);

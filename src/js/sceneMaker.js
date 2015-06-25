@@ -6,8 +6,8 @@ var d3 = require('d3');
 // This will hold the scenes array object.
 var SCENES;
 
-// Start before 0, since 0 is the first scene.
-var currentSceneIndex = -1;
+// Hold current scene.
+var currentSceneIndex = 0;
 
 // Utility function.
 function log(s) {
@@ -19,7 +19,8 @@ var events = {};
 
 // This will draw the scene in question.
 function drawScene(sceneIndex) {
-	document.querySelector('.scene-maker.chartScene').innerHTML = `drawing scene ${sceneIndex}`;
+	log('drawing scene ' + sceneIndex);
+	document.querySelector('.scene-maker.scene').innerHTML = `drawing scene ${sceneIndex}`;
 }
 
 // Check if we're at the end.
@@ -42,7 +43,7 @@ function createEvents() {
 function makeButtons() {
 
 	document.querySelector('.scene-maker.buttons').innerHTML = `
-		<button class='btn previous btn--small btn--secondary'>Previous</button>
+		<button class='btn previous btn--small btn--secondary btn--disabled' disabled>Previous</button>
 		<button class='btn next     btn--small btn--primary'>Next</button>
 	`;
 }
@@ -102,10 +103,54 @@ module.exports = {
 		wireButtons();
 	},
 
-	// On start, click 'Next'.
-	start() {
+	resize () {
 
-		document.querySelector('.scene-maker.buttons button.next').dispatchEvent(events.click);
+		// Recreate the svg container.
+
+		// Get the container.
+		var container = document.querySelector('.scene-maker.scene');
+
+		// Empty the container.
+		container.innerHTML = '';
+
+		// Define margins.
+		var margin = {top: 20, right: 20, bottom: 20, left: 20};
+
+		// Define svg dimensions.
+		var width = container.offsetWidth - margin.left - margin.right;
+		var height = container.offsetHeight - margin.top - margin.bottom;
+
+		// Define svg.
+		var svg = d3.select(container).append('svg')
+			.attr({
+				width: width + margin.left + margin.right,
+				height: height + margin.top + margin.bottom
+			});
+
+		// Define g.
+		var g = svg.append('g')
+			.attr({
+				transform: `translate(${margin.left}, ${margin.top})`
+			});
+
+		// Draw the current scene with duration 0 (no transitions).
+		drawScene(currentSceneIndex, {
+			duration: 0
+		});
 	}
 
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
