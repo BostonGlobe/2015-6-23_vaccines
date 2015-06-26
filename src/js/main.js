@@ -1,6 +1,7 @@
 'use strict';
 
 // Include various libraries.
+require('babel/polyfill');
 var _ = require('lodash');
 var globeIframe = require('globe-iframe-resizer');
 var sceneMaker = require('./sceneMaker');

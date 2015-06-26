@@ -28,7 +28,7 @@ function drawScene(sceneIndex, opts) {
 	var chart = require(`./charts/${sceneDefinition.chart}`);
 
 	// Construct options.
-	var options = _.assign(sceneDefinition.options, opts);
+	var options = Object.assign(sceneDefinition.options, opts);
 
 	// Draw scene.
 	chart.draw(sceneDefinition.scene, options);
@@ -105,9 +105,9 @@ function wireButtons() {
 
 module.exports = {
 
-	init(scene_definitions) {
+	init(sceneDefinitions) {
 
-		SCENE_DEFINITIONS = scene_definitions;
+		SCENE_DEFINITIONS = sceneDefinitions;
 
 		createEvents();
 		makeButtons();
@@ -132,17 +132,35 @@ module.exports = {
 		var height = container.offsetHeight - margin.top - margin.bottom;
 
 		// Define svg.
-		var svg = d3.select(container).append('svg')
-			.attr({
-				width: width + margin.left + margin.right,
-				height: height + margin.top + margin.bottom
-			});
+		function createSvg(name) {
 
-		// Define g.
-		var g = svg.append('g')
-			.attr({
-				transform: `translate(${margin.left}, ${margin.top})`
-			});
+			var svg = d3.select(container).append('svg')
+				.attr({
+					width: width + margin.left + margin.right,
+					height: height + margin.top + margin.bottom,
+					_innerWidth: width,
+					_innerHeight: height,
+					'class': name
+				});
+
+			// Define g.
+			var g = svg.append('g')
+				.attr({
+					transform: `translate(${margin.left}, ${margin.top})`,
+					'class': 'scenes'
+				});
+
+			// Add main g.
+			g.append('g').attr('class', 'main');
+		}
+
+		var chartNames = _(SCENE_DEFINITIONS)
+			.pluck('chart')
+			.uniq()
+			.value();
+
+		// Make one svg per chart.
+		chartNames.forEach(d => createSvg(d));
 
 		// Draw the current scene with duration 0 (no transitions).
 		drawScene(currentSceneIndex, {
