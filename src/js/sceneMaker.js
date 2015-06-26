@@ -2,9 +2,10 @@
 
 // Load libraries.
 var d3 = require('d3');
+var _ = require('lodash');
 
-// This will hold the scenes array object.
-var SCENES;
+// This will hold the SCENE_DEFINITIONS array object.
+var SCENE_DEFINITIONS;
 
 // Hold current scene.
 var currentSceneIndex = 0;
@@ -18,14 +19,24 @@ function log(s) {
 var events = {};
 
 // This will draw the scene in question.
-function drawScene(sceneIndex) {
-	log('drawing scene ' + sceneIndex);
-	document.querySelector('.scene-maker.scene').innerHTML = `drawing scene ${sceneIndex}`;
+function drawScene(sceneIndex, opts) {
+
+	// Get the correct scene definition.
+	var sceneDefinition = SCENE_DEFINITIONS[sceneIndex];
+
+	// Retrieve the chart file.
+	var chart = require(`./charts/${sceneDefinition.chart}`);
+
+	// Construct options.
+	var options = _.assign(sceneDefinition.options, opts);
+
+	// Draw scene.
+	chart.draw(sceneDefinition.scene, options);
 }
 
 // Check if we're at the end.
 function atEnd() {
-	return currentSceneIndex === SCENES.length - 1;
+	return currentSceneIndex === SCENE_DEFINITIONS.length - 1;
 }
 
 // Check if we're at the beginning.
@@ -94,9 +105,9 @@ function wireButtons() {
 
 module.exports = {
 
-	init(scenes) {
+	init(scene_definitions) {
 
-		SCENES = scenes;
+		SCENE_DEFINITIONS = scene_definitions;
 
 		createEvents();
 		makeButtons();

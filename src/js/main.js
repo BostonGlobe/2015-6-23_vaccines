@@ -4,14 +4,14 @@
 var _ = require('lodash');
 var globeIframe = require('globe-iframe-resizer');
 var sceneMaker = require('./sceneMaker');
-var scenes = require('./scenes');
+var sceneDefinitions = require('./sceneDefinitions');
 
 // Make pym resize parent window.
 var onPymParentResize = function() {};
 globeIframe(onPymParentResize);
 
 // Create and wire the buttons.
-sceneMaker.init(scenes);
+sceneMaker.init(sceneDefinitions);
 
 // Debounce resizing calls.
 var resize = _.debounce(function() {
