@@ -1,17 +1,37 @@
 'use strict';
 
+var d3 = require('d3');
+
 let chartFactory = require('./chartFactory');
 
 let chart = chartFactory({
+
+	config: {
+		data: require('../../../data/output/kinder_rates.csv')
+			.map(function(v) {
+				return {
+					school: v['School.Name'],
+					city: v.City,
+					lat: +v.LAT,
+					lng: +v.LNG,
+					exemption: +v.Exemption
+				};
+			}),
+		scales: {},
+		attributes: {
+			cx: 10,
+			cy: 10,
+			r: 10
+		}
+	},
 
 	NAME: 'bubbles',
 
 	databind() {
 
 		// DATA JOINS
-		debugger;
-		var circles = this.config.main.selectAll('circles')
-			.data(this.config.data, d => [d['School.Name'], d.City].join(''));
+		var circles = chart.config.main.selectAll('circles')
+			.data(chart.config.data, d => [d.school, d.city].join(''));
 
 		// // UPDATE
 		// rects.transition()
@@ -20,21 +40,59 @@ let chart = chartFactory({
 		// 	.style(config.style);
 
 		// ENTER
-		circles.enter().append('circles')
-			// .attr(config.attributes)
+		circles.enter().append('circle')
+			.attr(chart.config.attributes);
 			// .style(config.style);
-	},
-
-	setupUtilityVariables() {
-
-		this.config.data = require('../../../data/output/kinder_rates.csv');
-
 	},
 
 	setupScales() {
 
+		chart.config.scales.x = d3.scale.linear().range([0, chart.config.width]);
+		chart.config.scales.y = d3.scale.linear().range([chart.config.height, 0]);
 	},
+
 	setupAxes() {
+
+	},
+
+	scenes: {
+
+		setup() {
+
+			chart.config.scales.x.domain(d3.extent(chart.config.data, d => d.lng));
+			chart.config.scales.y.domain(d3.extent(chart.config.data, d => d.lat));
+
+			chart.config.attributes = {
+				cx: d => chart.config.scales.x(d.lng),
+				cy: d => chart.config.scales.y(d.lat),
+				r: 1
+			};
+
+		},
+
+		map(options) {
+
+			chart.scenes.setup(options);
+
+			console.log(options);
+
+		},
+
+		first(options) {
+
+			chart.scenes.setup(options);
+
+			console.log(options);
+
+		},
+
+		last(options) {
+
+			chart.scenes.setup(options);
+
+			console.log(options);
+
+		}
 
 	}
 
@@ -179,9 +237,6 @@ module.exports = {
 // // }
 
 // // function setupScales() {
-// // 	config.scales.x = d3.time.scale().range([0, config.width]);
-// // 	config.scales.y = d3.scale.linear().range([config.height, 0]);
-// // 	config.scales.color = d3.scale.ordinal();
 // // }
 
 // // function setupAxes() {
