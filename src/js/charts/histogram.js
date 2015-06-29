@@ -17,14 +17,8 @@ let chart = chartFactory({
 		histogramValues: [],
 		binCount: 10,
 		scales: {},
-		before: {
-			attributes: {},
-			style: {}
-		},
-		after: {
-			attributes: {},
-			style: {}
-		}
+		attributes: {},
+		style: {}
 	},
 
 	databind() {
@@ -32,26 +26,22 @@ let chart = chartFactory({
 		var config = chart.config;
 		var scales = config.scales;
 		var data = config.histogramValues;
+		var duration = config.duration || 0;
+		var delay = config.delay || 0;
 
 		// DATAJOIN
-		var bars = config.main.selectAll('.bar')
+		var bars = config.main.selectAll('rect')
 			.data(data);
 
 		// UPDATE
+		bars
+			.transition()
+			.duration(1000)
+			.attr(config.attributes);
 
 		// ENTER
-		bars.enter().append('g')
-			.attr({
-				'class': 'bar',
-				transform: d => `translate(${scales.x(d.x)}, ${scales.y(d.y)})`
-			});
-		bars.append('rect')
-			.attr({
-				x: 1,
-				width: scales.x(data[0].dx) - 1,
-				height: d => config.height - scales.y(d.y)
-			});
-
+		bars.enter().append('rect')
+			.attr(config.attributes);
 	},
 
 	setupScales() {
@@ -69,7 +59,7 @@ let chart = chartFactory({
 			.bins(scales.x.ticks(config.binCount))(schools.map(d => d.exemption));
 
 		scales.y = d3.scale.linear()
-			.domain([0, d3.max(config.histogramValues, function(d) { return d.y; })])
+			.domain([0, d3.max(config.histogramValues, d => d.y)])
 			.range([config.height, 0]);
 	},
 
@@ -81,18 +71,26 @@ let chart = chartFactory({
 
 		setup() {
 
+			var config = chart.config;
+			var scales = config.scales;
+
+			config.attributes = {
+				x: d => scales.x(d.x),
+				width: d => scales.x(d.dx),
+				y: config.height,
+				height: 0
+			};
 		},
 
-		map(options) {
+		main(options) {
 
-		},
+			chart.scenes.setup(options);
 
-		first(options) {
+			var config = chart.config;
+			var scales = config.scales;
 
-		},
-
-		last(options) {
-
+			config.attributes.y = d => scales.y(d.y);
+			config.attributes.height = d => config.height - scales.y(d.y);
 		}
 
 	}

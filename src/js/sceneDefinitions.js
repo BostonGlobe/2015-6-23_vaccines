@@ -9,6 +9,13 @@ module.exports = [
 		}
 	},
 	{
+		chart: 'histogram',
+		scene: 'main',
+		options: {
+			duration: 100
+		}
+	},
+	{
 		chart: 'bubbles',
 		scene: 'setup',
 		options: {
