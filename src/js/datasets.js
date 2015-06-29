@@ -22,6 +22,9 @@ var schools = _(topojson.feature(ma, ma.objects.schools).features)
 		};
 	})
 	.sortBy('exemption')
+	.reverse()
+	// .take(3)
+	// .take(500)
 	.value();
 
 module.exports = {

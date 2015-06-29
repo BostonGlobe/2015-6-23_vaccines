@@ -1,0 +1,109 @@
+'use strict';
+
+var d3 = require('d3');
+let chartFactory = require('./chartFactory');
+
+// Utility function.
+function log(s) {
+	console.log(JSON.stringify(s, null, 4));
+}
+
+let chart = chartFactory({
+
+	NAME: 'histogram',
+
+	config: {
+		datasets: require('../datasets'),
+		histogramValues: [],
+		binCount: 10,
+		scales: {},
+		before: {
+			attributes: {},
+			style: {}
+		},
+		after: {
+			attributes: {},
+			style: {}
+		}
+	},
+
+	databind() {
+
+		var config = chart.config;
+		var scales = config.scales;
+		var data = config.histogramValues;
+
+		// DATAJOIN
+		var bars = config.main.selectAll('.bar')
+			.data(data);
+
+		// UPDATE
+
+		// ENTER
+		bars.enter().append('g')
+			.attr({
+				'class': 'bar',
+				transform: d => `translate(${scales.x(d.x)}, ${scales.y(d.y)})`
+			});
+		bars.append('rect')
+			.attr({
+				x: 1,
+				width: scales.x(data[0].dx) - 1,
+				height: d => config.height - scales.y(d.y)
+			});
+
+	},
+
+	setupScales() {
+
+		var config = chart.config;
+		var schools = config.datasets.schools;
+		var scales = config.scales;
+
+		scales.x = d3.scale.linear()
+			.domain(d3.extent(schools, d => d.exemption))
+			.range([0, config.width]);
+
+		// Generate a histogram using twenty uniformly-spaced bins.
+		config.histogramValues = d3.layout.histogram()
+			.bins(scales.x.ticks(config.binCount))(schools.map(d => d.exemption));
+
+		scales.y = d3.scale.linear()
+			.domain([0, d3.max(config.histogramValues, function(d) { return d.y; })])
+			.range([config.height, 0]);
+	},
+
+	setupAxes() {
+
+	},
+
+	scenes: {
+
+		setup() {
+
+		},
+
+		map(options) {
+
+		},
+
+		first(options) {
+
+		},
+
+		last(options) {
+
+		}
+
+	}
+
+});
+
+module.exports = {
+	draw: function(...x) {
+		chart.draw(...x);
+	},
+	binCount() {
+		return chart.config.binCount;
+	}
+};

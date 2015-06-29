@@ -4,6 +4,7 @@ var d3 = require('d3');
 var d3util = require('../d3util');
 let chartFactory = require('./chartFactory');
 
+
 // Utility function.
 function log(s) {
 	console.log(JSON.stringify(s, null, 4));
@@ -16,31 +17,37 @@ let chart = chartFactory({
 	config: {
 		datasets: require('../datasets'),
 		scales: {},
-		attributes: {
-			cx: 10,
-			cy: 10,
-			r: 10
+		before: {
+			attributes: {},
+			style: {}
+		},
+		after: {
+			attributes: {},
+			style: {}
 		}
 	},
 
 	databind() {
 
 		var config = chart.config;
+		var duration = config.duration || 0;
+		var delay = config.delay || 0;
 
 		// DATA JOINS
-		var circles = config.main.selectAll('circles')
+		var circles = config.main.selectAll('circle')
 			.data(config.datasets.schools, d => [d.school, d.city].join(''));
 
-		// // // // UPDATE
-		// // // rects.transition()
-		// // // 	.duration(config.duration)
-		// // // 	.attr(config.attributes)
-		// // // 	.style(config.style);
+		// UPDATE
+		circles.transition()
+			.duration(duration)
+			.delay(delay)
+			.attr(config.after.attributes)
+			.style(config.after.style);
 
 		// ENTER
 		circles.enter().append('circle')
-			.attr(config.attributes);
-		// 	// .style(config.style);
+			.attr(config.after.attributes)
+			.style(config.after.style);
 	},
 
 	setupScales() {
@@ -62,10 +69,10 @@ let chart = chartFactory({
 
 			var config = chart.config;
 			var datasets = config.datasets;
-			var scales = config.scales;
-			var x = scales.x;
-			var y = scales.y;
-			var radius = scales.radius;
+			// var scales = config.scales;
+			// var x = scales.x;
+			// var y = scales.y;
+			// var radius = scales.radius;
 			var schools = datasets.schools;
 
 			config.projection = d3util.prepareProjectionPath({
@@ -74,17 +81,21 @@ let chart = chartFactory({
 				height: config.height
 			}).projection;
 
-			x = d => config.projection([d.lng, d.lat])[0];
-			y = d => config.projection([d.lng, d.lat])[1];
+			var x = d => config.projection([d.lng, d.lat])[0];
+			var y = d => config.projection([d.lng, d.lat])[1];
 
-			radius = d3.scale.sqrt()
+			var radius = d3.scale.sqrt()
 				.domain([0, d3.max(schools, d => d.exemption)])
-				.range([0, 20]);
+				.range([0, 10]);
 
-			config.attributes = {
+			config.after.attributes = {
 				cx: d => x(d),
 				cy: d => y(d),
 				r: d => radius(d.exemption)
+			};
+
+			config.after.style = {
+				opacity: 0
 			};
 		},
 
@@ -92,16 +103,39 @@ let chart = chartFactory({
 
 			chart.scenes.setup(options);
 
-			console.log(options);
-
+			chart.config.style = {
+				opacity: 1
+			};
 		},
 
 		first(options) {
 
-			chart.scenes.setup(options);
+			chart.scenes.map(options);
 
-			console.log(options);
+			var config = chart.config;
+			var schools = config.datasets.schools.slice(0, 500);
 
+			var x = d3.scale.linear()
+				.range([0, config.width])
+				.domain([0, schools.length]);
+
+			var y = d3.scale.linear()
+				.range([config.height, 0])
+				.domain(d3.extent(schools, d => d.exemption));
+
+			var radius = d3.scale.sqrt()
+				.domain([0, d3.max(schools, d => d.exemption)])
+				.range([0, 10]);
+
+			config.attributes = {
+				cx: (d, i) => x(i),
+				cy: d => y(d.exemption),
+				// r: 1
+				r: d => radius(d.exemption)
+			};
+
+			config.duration = 1000;
+			config.delay = (d, i) => 100 * i;
 		},
 
 		last(options) {
