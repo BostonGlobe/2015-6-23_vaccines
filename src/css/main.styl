@@ -10,17 +10,22 @@ $colors_bw_4 = #DEDFE0
 	height 0
 	padding-bottom 50%
 	border solid red 1px
+	position relative
+	
+	svg
+		position absolute
+		top 0
+		left 0
 
-// .large-map-wrapper
-// 	svg
-// 		g.state
-// 			path
-// 				fill $colors_map_3
-// 				fill-opacity 0.5
-				
-// 		g.schools
-// 			circle
-// 				fill darken($colors_highlight_red, 25%)
-// 				fill-opacity 0.35
-// 				stroke darken(@fill, 50%)
-// 				stroke-width 0.25px
+	
+	.map
+		path
+			fill $colors_map_3
+			fill-opacity 0.5
+	
+	.bubbles
+		circle
+			fill darken($colors_highlight_red, 25%)
+			fill-opacity 0.35
+			stroke darken(@fill, 50%)
+			stroke-width 0.25px

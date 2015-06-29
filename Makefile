@@ -25,13 +25,13 @@ map_process:
 		../input/TOWNSSURVEY_POLYM.shp \
 		-dissolve \
 		-simplify 0.5% \
-		-o state.shp
+		-o state_temp.shp
 
-	# # project towns to EPSG:26986
-	# cd map/output; ogr2ogr \
-	# 	-t_srs 'EPSG:26986' \
-	# 	MA.shp \
-	# 	MA_temp.shp
+	# project towns to EPSG:4326
+	cd map/output; ogr2ogr \
+		-t_srs 'EPSG:4326' \
+		state.shp \
+		state_temp.shp
 
 	# convert kinder_rates csv to geojson
 	cd map/output; csvjson \
@@ -56,6 +56,7 @@ map_process:
 	# 	-- MA.shp kinder_rates.shp
 
 	# convert to topojson
+	# this one
 	cd map/output; topojson \
 		-o ma.json \
 		-p \

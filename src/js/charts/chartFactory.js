@@ -7,12 +7,14 @@ let chart = {
 
 	setupUtilityVariables() {
 
-		this.config.svg = d3.select(`.scene-maker.scene svg.${this.NAME}`);
-		this.config.scenes = this.config.svg.select('g.scenes');
-		this.config.main = this.config.scenes.select('g.main');
+		var config = this.config;
 
-		this.config.width = +this.config.svg.attr('_innerWidth');
-		this.config.height = +this.config.svg.attr('_innerHeight');
+		config.svg = d3.select(`.scene-maker.scene svg.${this.NAME}`);
+		config.scenes = config.svg.select('g.scenes');
+		config.main = config.scenes.select('g.main');
+
+		config.width = +config.svg.attr('_innerWidth');
+		config.height = +config.svg.attr('_innerHeight');
 	},
 
 	render() {

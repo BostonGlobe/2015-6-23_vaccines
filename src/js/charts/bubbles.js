@@ -1,22 +1,20 @@
 'use strict';
 
 var d3 = require('d3');
-
+var d3util = require('../d3util');
 let chartFactory = require('./chartFactory');
+
+// Utility function.
+function log(s) {
+	console.log(JSON.stringify(s, null, 4));
+}
 
 let chart = chartFactory({
 
+	NAME: 'bubbles',
+
 	config: {
-		data: require('../../../data/output/kinder_rates.csv')
-			.map(function(v) {
-				return {
-					school: v['School.Name'],
-					city: v.City,
-					lat: +v.LAT,
-					lng: +v.LNG,
-					exemption: +v.Exemption
-				};
-			}),
+		datasets: require('../datasets'),
 		scales: {},
 		attributes: {
 			cx: 10,
@@ -25,30 +23,33 @@ let chart = chartFactory({
 		}
 	},
 
-	NAME: 'bubbles',
-
 	databind() {
 
-		// DATA JOINS
-		var circles = chart.config.main.selectAll('circles')
-			.data(chart.config.data, d => [d.school, d.city].join(''));
+		var config = chart.config;
 
-		// // UPDATE
-		// rects.transition()
-		// 	.duration(config.duration)
-		// 	.attr(config.attributes)
-		// 	.style(config.style);
+		// DATA JOINS
+		var circles = config.main.selectAll('circles')
+			.data(config.datasets.schools, d => [d.school, d.city].join(''));
+
+		// // // // UPDATE
+		// // // rects.transition()
+		// // // 	.duration(config.duration)
+		// // // 	.attr(config.attributes)
+		// // // 	.style(config.style);
 
 		// ENTER
 		circles.enter().append('circle')
-			.attr(chart.config.attributes);
-			// .style(config.style);
+			.attr(config.attributes);
+		// 	// .style(config.style);
 	},
 
 	setupScales() {
 
-		chart.config.scales.x = d3.scale.linear().range([0, chart.config.width]);
-		chart.config.scales.y = d3.scale.linear().range([chart.config.height, 0]);
+		// var config = chart.config;
+		// var scales = config.scales;
+
+		// scales.x = d3.scale.linear().range([0, config.width]);
+		// scales.y = d3.scale.linear().range([config.height, 0]);
 	},
 
 	setupAxes() {
@@ -59,15 +60,32 @@ let chart = chartFactory({
 
 		setup() {
 
-			chart.config.scales.x.domain(d3.extent(chart.config.data, d => d.lng));
-			chart.config.scales.y.domain(d3.extent(chart.config.data, d => d.lat));
+			var config = chart.config;
+			var datasets = config.datasets;
+			var scales = config.scales;
+			var x = scales.x;
+			var y = scales.y;
+			var radius = scales.radius;
+			var schools = datasets.schools;
 
-			chart.config.attributes = {
-				cx: d => chart.config.scales.x(d.lng),
-				cy: d => chart.config.scales.y(d.lat),
-				r: 1
+			config.projection = d3util.prepareProjectionPath({
+				datum: datasets.state[0],
+				width: config.width,
+				height: config.height
+			}).projection;
+
+			x = d => config.projection([d.lng, d.lat])[0];
+			y = d => config.projection([d.lng, d.lat])[1];
+
+			radius = d3.scale.sqrt()
+				.domain([0, d3.max(schools, d => d.exemption)])
+				.range([0, 20]);
+
+			config.attributes = {
+				cx: d => x(d),
+				cy: d => y(d),
+				r: d => radius(d.exemption)
 			};
-
 		},
 
 		map(options) {

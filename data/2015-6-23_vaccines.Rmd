@@ -27,6 +27,8 @@ data <- rawdata %>%
   filter(!(Exemption %in% c('', '*'))) %>%
   mutate(Exemption = as.numeric(Exemption))
 
+data %>% group_by(School.Name, City) %>% tally()
+
 write.csv(data, 'output/kinder_rates.csv', row.names=F)
 ```
 

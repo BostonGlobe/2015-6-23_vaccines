@@ -19,19 +19,25 @@ function log(s) {
 var events = {};
 
 // This will draw the scene in question.
-function drawScene(sceneIndex, opts) {
+function drawScenes(sceneIndex, opts) {
 
-	// Get the correct scene definition.
-	var sceneDefinition = SCENE_DEFINITIONS[sceneIndex];
+	// Get the correct scene definition(s).
+	var sceneDefinition = _.flatten([SCENE_DEFINITIONS[sceneIndex]]);
 
-	// Retrieve the chart file.
-	var chart = require(`./charts/${sceneDefinition.chart}`);
+	function drawScene(definition) {
 
-	// Construct options.
-	var options = Object.assign(sceneDefinition.options, opts);
+		// Retrieve the chart file.
+		var chart = require(`./charts/${definition.chart}`);
 
-	// Draw scene.
-	chart.draw(sceneDefinition.scene, options);
+		// Construct options.
+		var options = Object.assign(definition.options, opts);
+
+		// Draw scene.
+		chart.draw(definition.scene, options);
+	}
+
+	sceneDefinition.forEach(drawScene);
+
 }
 
 // Check if we're at the end.
@@ -94,7 +100,7 @@ function wireButtons() {
 		d3.select(next).classed('btn--disabled', atEnd());
 
 		// Draw scene.
-		drawScene(currentSceneIndex);
+		drawScenes(currentSceneIndex);
 	}
 
 	// Add event listeners to buttons.
@@ -155,6 +161,7 @@ module.exports = {
 		}
 
 		var chartNames = _(SCENE_DEFINITIONS)
+			.flatten()
 			.pluck('chart')
 			.uniq()
 			.value();
@@ -163,7 +170,7 @@ module.exports = {
 		chartNames.forEach(d => createSvg(d));
 
 		// Draw the current scene with duration 0 (no transitions).
-		drawScene(currentSceneIndex, {
+		drawScenes(currentSceneIndex, {
 			duration: 0
 		});
 	}
