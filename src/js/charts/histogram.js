@@ -15,7 +15,7 @@ let chart = chartFactory({
 	config: {
 		datasets: require('../datasets'),
 		histogramValues: [],
-		binCount: 10,
+		binCount: 20,
 		scales: {},
 		attributes: {},
 		style: {}
@@ -63,9 +63,7 @@ let chart = chartFactory({
 			.range([config.height, 0]);
 	},
 
-	setupAxes() {
-
-	},
+	setupAxes() {},
 
 	scenes: {
 

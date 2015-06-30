@@ -2,8 +2,15 @@
 
 module.exports = [
 	{
-		chart: 'histogram',
-		scene: 'setup',
+		chart: 'bubbles',
+		scene: 'map',
+		options: {
+			duration: 100
+		}
+	},
+	{
+		chart: 'bubbles',
+		scene: 'histogram',
 		options: {
 			duration: 100
 		}
@@ -14,21 +21,14 @@ module.exports = [
 		options: {
 			duration: 100
 		}
-	},
-	{
-		chart: 'bubbles',
-		scene: 'setup',
-		options: {
-			duration: 100
-		}
-	},
-	{
-		chart: 'bubbles',
-		scene: 'map',
-		options: {
-			duration: 100
-		}
-	},
+	}
+	// 	chart: 'histogram',
+	// 	scene: 'setup',
+	// 	options: {
+	// 		duration: 100
+	// 	}
+	// },
+	// },
 	// [
 	// 	{
 	// 		chart: 'map',
@@ -45,18 +45,4 @@ module.exports = [
 	// 		}
 	// 	}
 	// ],
-	{
-		chart: 'bubbles',
-		scene: 'first',
-		options: {
-			duration: 200
-		}
-	},
-	{
-		chart: 'bubbles',
-		scene: 'last',
-		options: {
-			duration: 300
-		}
-	}
 ];

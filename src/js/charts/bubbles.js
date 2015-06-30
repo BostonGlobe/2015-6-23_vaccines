@@ -3,7 +3,7 @@
 var d3 = require('d3');
 var d3util = require('../d3util');
 let chartFactory = require('./chartFactory');
-
+var _ = require('lodash');
 
 // Utility function.
 function log(s) {
@@ -15,16 +15,11 @@ let chart = chartFactory({
 	NAME: 'bubbles',
 
 	config: {
+		binCount: 20,
 		datasets: require('../datasets'),
 		scales: {},
-		before: {
-			attributes: {},
-			style: {}
-		},
-		after: {
-			attributes: {},
-			style: {}
-		}
+		attributes: {},
+		style: {}
 	},
 
 	databind() {
@@ -39,29 +34,20 @@ let chart = chartFactory({
 
 		// UPDATE
 		circles.transition()
-			.duration(duration)
-			.delay(delay)
-			.attr(config.after.attributes)
-			.style(config.after.style);
+			.duration(1000)
+			.delay((d, i) => 50 * i)
+			.attr(config.attributes)
+			.style(config.style);
 
 		// ENTER
 		circles.enter().append('circle')
-			.attr(config.after.attributes)
-			.style(config.after.style);
+			.attr(config.attributes)
+			.style(config.style);
 	},
 
-	setupScales() {
+	setupScales() {},
 
-		// var config = chart.config;
-		// var scales = config.scales;
-
-		// scales.x = d3.scale.linear().range([0, config.width]);
-		// scales.y = d3.scale.linear().range([config.height, 0]);
-	},
-
-	setupAxes() {
-
-	},
+	setupAxes() {},
 
 	scenes: {
 
@@ -69,10 +55,6 @@ let chart = chartFactory({
 
 			var config = chart.config;
 			var datasets = config.datasets;
-			// var scales = config.scales;
-			// var x = scales.x;
-			// var y = scales.y;
-			// var radius = scales.radius;
 			var schools = datasets.schools;
 
 			config.projection = d3util.prepareProjectionPath({
@@ -88,13 +70,13 @@ let chart = chartFactory({
 				.domain([0, d3.max(schools, d => d.exemption)])
 				.range([0, 10]);
 
-			config.after.attributes = {
+			config.attributes = {
 				cx: d => x(d),
 				cy: d => y(d),
 				r: d => radius(d.exemption)
 			};
 
-			config.after.style = {
+			config.style = {
 				opacity: 0
 			};
 		},
@@ -108,43 +90,75 @@ let chart = chartFactory({
 			};
 		},
 
-		first(options) {
-
-			chart.scenes.map(options);
+		histogram(options) {
 
 			var config = chart.config;
-			var schools = config.datasets.schools.slice(0, 500);
+			var schools = config.datasets.schools;
 
 			var x = d3.scale.linear()
-				.range([0, config.width])
-				.domain([0, schools.length]);
+				.domain(d3.extent(schools, d => d.exemption))
+				.range([0, config.width]);
 
-			var y = d3.scale.linear()
-				.range([config.height, 0])
-				.domain(d3.extent(schools, d => d.exemption));
+			// Generate a histogram using twenty uniformly-spaced bins.
+			var histogramValues = d3.layout.histogram()
+				.bins(x.ticks(config.binCount))(schools.map(d => d.exemption));
 
-			var radius = d3.scale.sqrt()
-				.domain([0, d3.max(schools, d => d.exemption)])
-				.range([0, 10]);
+			// Create bin lengths so we can sort the bubbles.
+			// e.g. [0, 884, 930, 935, 936, 936, 937, 937, 937, 938]
+			var binLengths = histogramValues
+				.map(d => d.length)
+				.map((d, i, a) => _(a).take(i + 1).sum());
 
-			config.attributes = {
-				cx: (d, i) => x(i),
-				cy: d => y(d.exemption),
-				// r: 1
-				r: d => radius(d.exemption)
+			binLengths.unshift(0);
+
+			config.attributes.cx = function (d, i) {
+
+				// Given this element's index, find its bin.
+				var index = _.findIndex(binLengths, binLength => i < binLength) - 1;
+
+				return x(histogramValues[index].x);
 			};
 
-			config.duration = 1000;
-			config.delay = (d, i) => 100 * i;
-		},
-
-		last(options) {
-
-			chart.scenes.setup(options);
-
-			console.log(options);
-
+			config.attributes.cy = config.height;
 		}
+
+		// first(options) {
+
+		// 	chart.scenes.map(options);
+
+		// 	var config = chart.config;
+		// 	var schools = config.datasets.schools.slice(0, 500);
+
+		// 	var x = d3.scale.linear()
+		// 		.range([0, config.width])
+		// 		.domain([0, schools.length]);
+
+		// 	var y = d3.scale.linear()
+		// 		.range([config.height, 0])
+		// 		.domain(d3.extent(schools, d => d.exemption));
+
+		// 	var radius = d3.scale.sqrt()
+		// 		.domain([0, d3.max(schools, d => d.exemption)])
+		// 		.range([0, 10]);
+
+		// 	config.attributes = {
+		// 		cx: (d, i) => x(i),
+		// 		cy: d => y(d.exemption),
+		// 		// r: 1
+		// 		r: d => radius(d.exemption)
+		// 	};
+
+		// 	config.duration = 1000;
+		// 	config.delay = (d, i) => 100 * i;
+		// },
+
+		// last(options) {
+
+		// 	chart.scenes.setup(options);
+
+		// 	console.log(options);
+
+		// }
 
 	}
 
