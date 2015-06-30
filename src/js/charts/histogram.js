@@ -24,19 +24,19 @@ let chart = chartFactory({
 	databind() {
 
 		var config = chart.config;
-		var scales = config.scales;
 		var data = config.histogramValues;
 		var duration = config.duration || 0;
 		var delay = config.delay || 0;
 
 		// DATAJOIN
 		var bars = config.main.selectAll('rect')
-			.data(data);
+			.data(data, (d, i) => i);
 
 		// UPDATE
 		bars
 			.transition()
-			.duration(1000)
+			.duration(duration)
+			.delay(delay)
 			.attr(config.attributes);
 
 		// ENTER
@@ -80,9 +80,9 @@ let chart = chartFactory({
 			};
 		},
 
-		main(options) {
+		main() {
 
-			chart.scenes.setup(options);
+			chart.scenes.setup();
 
 			var config = chart.config;
 			var scales = config.scales;

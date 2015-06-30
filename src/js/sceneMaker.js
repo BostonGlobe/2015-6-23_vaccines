@@ -18,6 +18,15 @@ function log(s) {
 // This is used to trigger native events.
 var events = {};
 
+function setupChart(chartName, opts) {
+
+	// Retrieve the chart file.
+	var chart = require(`./charts/${chartName}`);
+
+	// Draw setup.
+	chart.draw('setup', opts);
+}
+
 // This will draw the scene in question.
 function drawScenes(sceneIndex, opts) {
 
@@ -30,14 +39,13 @@ function drawScenes(sceneIndex, opts) {
 		var chart = require(`./charts/${definition.chart}`);
 
 		// Construct options.
-		var options = Object.assign(definition.options, opts);
+		var options = Object.assign({}, definition.options, opts);
 
 		// Draw scene.
 		chart.draw(definition.scene, options);
 	}
 
 	sceneDefinition.forEach(drawScene);
-
 }
 
 // Check if we're at the end.
@@ -109,6 +117,64 @@ function wireButtons() {
 	}
 }
 
+// Recreate the svg container and draw current scene(s).
+function redraw(opts = {}) {
+
+	// Get the container.
+	var container = document.querySelector('.scene-maker.scene');
+
+	// Empty the container.
+	container.innerHTML = '';
+
+	// Define margins.
+	var margin = {top: 20, right: 20, bottom: 20, left: 20};
+
+	// Define svg dimensions.
+	var width = container.offsetWidth - margin.left - margin.right;
+	var height = container.offsetHeight - margin.top - margin.bottom;
+
+	// Define svg.
+	function createSvg(name) {
+
+		var svg = d3.select(container).append('svg')
+			.attr({
+				width: width + margin.left + margin.right,
+				height: height + margin.top + margin.bottom,
+				_innerWidth: width,
+				_innerHeight: height,
+				'class': name
+			});
+
+		// Define g.
+		var g = svg.append('g')
+			.attr({
+				transform: `translate(${margin.left}, ${margin.top})`,
+				'class': 'scenes'
+			});
+
+		// Add main g.
+		g.append('g').attr('class', 'main');
+	}
+
+	var chartNames = _(SCENE_DEFINITIONS)
+		.flatten()
+		.pluck('chart')
+		.uniq()
+		.value();
+
+	// Make one svg per chart.
+	chartNames.forEach(d => createSvg(d));
+
+	// Draw 'setup' for each chart.
+	chartNames.forEach(d => setupChart(d, {
+		duration: 0,
+		delay: 0
+	}));
+
+	// Draw the current scene.
+	drawScenes(currentSceneIndex, opts);
+}
+
 module.exports = {
 
 	init(sceneDefinitions) {
@@ -121,72 +187,14 @@ module.exports = {
 	},
 
 	resize () {
-
-		// Recreate the svg container.
-
-		// Get the container.
-		var container = document.querySelector('.scene-maker.scene');
-
-		// Empty the container.
-		container.innerHTML = '';
-
-		// Define margins.
-		var margin = {top: 20, right: 20, bottom: 20, left: 20};
-
-		// Define svg dimensions.
-		var width = container.offsetWidth - margin.left - margin.right;
-		var height = container.offsetHeight - margin.top - margin.bottom;
-
-		// Define svg.
-		function createSvg(name) {
-
-			var svg = d3.select(container).append('svg')
-				.attr({
-					width: width + margin.left + margin.right,
-					height: height + margin.top + margin.bottom,
-					_innerWidth: width,
-					_innerHeight: height,
-					'class': name
-				});
-
-			// Define g.
-			var g = svg.append('g')
-				.attr({
-					transform: `translate(${margin.left}, ${margin.top})`,
-					'class': 'scenes'
-				});
-
-			// Add main g.
-			g.append('g').attr('class', 'main');
-		}
-
-		var chartNames = _(SCENE_DEFINITIONS)
-			.flatten()
-			.pluck('chart')
-			.uniq()
-			.value();
-
-		// Make one svg per chart.
-		chartNames.forEach(d => createSvg(d));
-
-		// Draw the current scene with duration 0 (no transitions).
-		drawScenes(currentSceneIndex, {
-			duration: 0
+		redraw({
+			duration: 0,
+			delay: 0
 		});
+	},
+
+	start() {
+		redraw();
 	}
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-

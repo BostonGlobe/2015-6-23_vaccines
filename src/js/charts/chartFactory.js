@@ -23,6 +23,9 @@ let chart = {
 
 	draw(scene, opts) {
 
+		// Assign opts to the chart's config.
+		Object.assign(this.config, opts);
+
 		this.setupUtilityVariables();
 		this.setupScales();
 		// this.setupAxes();

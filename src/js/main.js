@@ -22,8 +22,8 @@ var resize = _.debounce(function() {
 // Handle resize event.
 window.addEventListener('resize', resize);
 
-// Call resize once to start the whole thing.
-resize();
+// Start the whole thing.
+sceneMaker.start();
 
 
 

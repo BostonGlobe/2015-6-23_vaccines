@@ -34,8 +34,8 @@ let chart = chartFactory({
 
 		// UPDATE
 		circles.transition()
-			.duration(1000)
-			.delay((d, i) => 50 * i)
+			.duration(duration)
+			.delay(delay)
 			.attr(config.attributes)
 			.style(config.style);
 
@@ -81,16 +81,18 @@ let chart = chartFactory({
 			};
 		},
 
-		map(options) {
+		map() {
 
-			chart.scenes.setup(options);
+			chart.scenes.setup();
 
 			chart.config.style = {
 				opacity: 1
 			};
 		},
 
-		histogram(options) {
+		histogram() {
+
+			chart.scenes.map();
 
 			var config = chart.config;
 			var schools = config.datasets.schools;
@@ -121,45 +123,6 @@ let chart = chartFactory({
 
 			config.attributes.cy = config.height;
 		}
-
-		// first(options) {
-
-		// 	chart.scenes.map(options);
-
-		// 	var config = chart.config;
-		// 	var schools = config.datasets.schools.slice(0, 500);
-
-		// 	var x = d3.scale.linear()
-		// 		.range([0, config.width])
-		// 		.domain([0, schools.length]);
-
-		// 	var y = d3.scale.linear()
-		// 		.range([config.height, 0])
-		// 		.domain(d3.extent(schools, d => d.exemption));
-
-		// 	var radius = d3.scale.sqrt()
-		// 		.domain([0, d3.max(schools, d => d.exemption)])
-		// 		.range([0, 10]);
-
-		// 	config.attributes = {
-		// 		cx: (d, i) => x(i),
-		// 		cy: d => y(d.exemption),
-		// 		// r: 1
-		// 		r: d => radius(d.exemption)
-		// 	};
-
-		// 	config.duration = 1000;
-		// 	config.delay = (d, i) => 100 * i;
-		// },
-
-		// last(options) {
-
-		// 	chart.scenes.setup(options);
-
-		// 	console.log(options);
-
-		// }
-
 	}
 
 });
