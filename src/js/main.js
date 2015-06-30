@@ -14,16 +14,20 @@ globeIframe(onPymParentResize);
 // Create and wire the buttons.
 sceneMaker.init(sceneDefinitions);
 
-// Debounce resizing calls.
-var resize = _.debounce(function() {
-	sceneMaker.resize();
-}, 200);
-
-// Handle resize event.
-window.addEventListener('resize', resize);
-
 // Start the whole thing.
 sceneMaker.start();
+
+// Wait two seconds, then wire resize event.
+setTimeout(function() {
+	
+	var resize = _.debounce(function() {
+		sceneMaker.resize();
+	}, 200);
+
+	// Handle resize event.
+	window.addEventListener('resize', resize);
+
+}, 2000);
 
 
 

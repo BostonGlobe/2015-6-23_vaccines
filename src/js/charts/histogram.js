@@ -25,8 +25,8 @@ let chart = chartFactory({
 
 		var config = chart.config;
 		var data = config.histogramValues;
-		var duration = config.duration || 0;
-		var delay = config.delay || 0;
+		var duration = config.duration;
+		var delay = config.delay;
 
 		// DATAJOIN
 		var bars = config.main.selectAll('rect')

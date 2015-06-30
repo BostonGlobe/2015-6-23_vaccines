@@ -25,8 +25,8 @@ let chart = chartFactory({
 	databind() {
 
 		var config = chart.config;
-		var duration = config.duration || 0;
-		var delay = config.delay || 0;
+		var duration = config.duration;
+		var delay = config.delay;
 
 		// DATA JOINS
 		var circles = config.main.selectAll('circle')
@@ -55,7 +55,6 @@ let chart = chartFactory({
 
 			var config = chart.config;
 			var datasets = config.datasets;
-			var schools = datasets.schools;
 
 			config.projection = d3util.prepareProjectionPath({
 				datum: datasets.state[0],
@@ -66,18 +65,10 @@ let chart = chartFactory({
 			var x = d => config.projection([d.lng, d.lat])[0];
 			var y = d => config.projection([d.lng, d.lat])[1];
 
-			var radius = d3.scale.sqrt()
-				.domain([0, d3.max(schools, d => d.exemption)])
-				.range([0, 10]);
-
 			config.attributes = {
 				cx: d => x(d),
 				cy: d => y(d),
-				r: d => radius(d.exemption)
-			};
-
-			config.style = {
-				opacity: 0
+				r: 0
 			};
 		},
 
@@ -85,9 +76,15 @@ let chart = chartFactory({
 
 			chart.scenes.setup();
 
-			chart.config.style = {
-				opacity: 1
-			};
+			var config = chart.config;
+			var datasets = config.datasets;
+			var schools = datasets.schools;
+
+			var radius = d3.scale.sqrt()
+				.domain([0, d3.max(schools, d => d.exemption)])
+				.range([0, 10]);
+
+			config.attributes.r = d => radius(d.exemption);
 		},
 
 		histogram() {
@@ -102,8 +99,18 @@ let chart = chartFactory({
 				.range([0, config.width]);
 
 			// Generate a histogram using twenty uniformly-spaced bins.
-			var histogramValues = d3.layout.histogram()
-				.bins(x.ticks(config.binCount))(schools.map(d => d.exemption));
+			var histogram = d3.layout.histogram()
+				.bins(x.ticks(config.binCount));
+
+			var histogramValues = histogram(schools.map(d => d.exemption));
+
+			var maxY = _(histogramValues)
+				.pluck('length')
+				.max();
+
+			var y = d3.scale.linear()
+				.domain([0, maxY])
+				.range([config.height, 0]);
 
 			// Create bin lengths so we can sort the bubbles.
 			// e.g. [0, 884, 930, 935, 936, 936, 937, 937, 937, 938]
@@ -113,15 +120,26 @@ let chart = chartFactory({
 
 			binLengths.unshift(0);
 
-			config.attributes.cx = function (d, i) {
+			config.attributes.cx = function(d, i) {
 
 				// Given this element's index, find its bin.
 				var index = _.findIndex(binLengths, binLength => i < binLength) - 1;
 
-				return x(histogramValues[index].x);
+				var bin = histogramValues[index];
+
+				return x(bin.x);
 			};
 
-			config.attributes.cy = config.height;
+			config.attributes.cy = function(d, i) {
+
+				// Given this element's index, find the bin's starting point.
+				// e.g. if i = 937, get 936
+				var startingPoint = _(binLengths)
+					.sortBy(datum => -datum)
+					.find(binLength => i >= binLength);
+
+				return y(i - startingPoint + 1);
+			};
 		}
 	}
 
