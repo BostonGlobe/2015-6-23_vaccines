@@ -8,9 +8,6 @@ module.exports = [
 			options: {
 				duration: 2000,
 				delay: 0
-				// delay: function(d, i) {
-				// 	return i * 5;
-				// }
 			}
 		},
 		{
@@ -27,20 +24,36 @@ module.exports = [
 			chart: 'bubbles',
 			scene: 'histogram',
 			options: {
-				duration: 2000,
+				duration: 1000,
 				delay: function(d, i) {
-					return i * 5;
+					return i * 3;
 				}
+			}
+		},
+		{
+			chart: 'histogram',
+			scene: 'setup',
+			options: {
+				duration: 2000,
+				delay: 0
+			}
+		}
+	],
+	[
+		{
+			chart: 'bubbles',
+			scene: 'histogramFadeout',
+			options: {
+				duration: 500,
+				delay: 0
 			}
 		},
 		{
 			chart: 'histogram',
 			scene: 'main',
 			options: {
-				duration: 2000,
-				delay: function(d, i) {
-					return i * 250;
-				}
+				duration: 1000,
+				delay: 0
 			}
 		}
 	]

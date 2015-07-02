@@ -127,7 +127,7 @@ function redraw(opts = {}) {
 	container.innerHTML = '';
 
 	// Define margins.
-	var margin = {top: 20, right: 20, bottom: 20, left: 20};
+	var margin = {top: 25, right: 25, bottom: 25, left: 25};
 
 	// Define svg dimensions.
 	var width = container.offsetWidth - margin.left - margin.right;
@@ -154,6 +154,14 @@ function redraw(opts = {}) {
 
 		// Add main g.
 		g.append('g').attr('class', 'main');
+
+		// Add axes
+		g.append('g').attr('class', 'y axis');
+		g.append('g')
+			.attr({
+				'class': 'x axis',
+				transform: `translate(0, ${height})`
+			});
 	}
 
 	var chartNames = _(SCENE_DEFINITIONS)

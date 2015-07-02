@@ -24,7 +24,7 @@ data <- rawdata %>%
   select(School.Name, City, LAT, LNG, Exemption) %>%
   mutate(Exemption = gsub('%', '', Exemption)) %>%
   mutate(Exemption = str_trim(Exemption, side='both')) %>%
-  filter(!(Exemption %in% c('', '*'))) %>%
+  filter(!Exemption %in% c('', '*')) %>%
   mutate(Exemption = as.numeric(Exemption))
 
 data %>% group_by(School.Name, City) %>% tally()

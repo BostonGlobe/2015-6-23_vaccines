@@ -17,8 +17,14 @@ let chart = chartFactory({
 	config: {
 		binCount: 20,
 		datasets: require('../datasets'),
-		scales: {},
-		attributes: {},
+		scales: {
+			before: {},
+			after: {}
+		},
+		attributes: {
+			before: {},
+			after: {}
+		},
 		style: {}
 	},
 
@@ -33,15 +39,16 @@ let chart = chartFactory({
 			.data(config.datasets.schools, d => [d.school, d.city].join(''));
 
 		// UPDATE
-		circles.transition()
+		circles.attr(config.attributes.before)
+			.transition()
 			.duration(duration)
 			.delay(delay)
-			.attr(config.attributes)
+			.attr(config.attributes.after)
 			.style(config.style);
 
 		// ENTER
 		circles.enter().append('circle')
-			.attr(config.attributes)
+			.attr(config.attributes.after)
 			.style(config.style);
 	},
 
@@ -55,6 +62,8 @@ let chart = chartFactory({
 
 			var config = chart.config;
 			var datasets = config.datasets;
+			var scales = config.scales;
+			var schools = datasets.schools;
 
 			config.projection = d3util.prepareProjectionPath({
 				datum: datasets.state[0],
@@ -65,11 +74,23 @@ let chart = chartFactory({
 			var x = d => config.projection([d.lng, d.lat])[0];
 			var y = d => config.projection([d.lng, d.lat])[1];
 
-			config.attributes = {
+			config.attributes.after = {
 				cx: d => x(d),
 				cy: d => y(d),
 				r: 0
 			};
+
+			scales.before.radius = d3.scale.sqrt()
+				.domain([0, d3.max(schools, d => d.exemption)])
+				.range([0, 10]);
+
+			scales.after.radius = d3.scale.sqrt()
+				.domain([0, d3.max(schools, d => d.exemption)])
+				.range([0, 10]);
+
+			config.style.opacity = 0;
+			config.attributes.before.r = d => scales.before.radius(d.exemption);
+			config.attributes.after.r = d => scales.after.radius(d.exemption);
 		},
 
 		map() {
@@ -77,14 +98,17 @@ let chart = chartFactory({
 			chart.scenes.setup();
 
 			var config = chart.config;
-			var datasets = config.datasets;
-			var schools = datasets.schools;
+			config.style.opacity = 1;
 
-			var radius = d3.scale.sqrt()
-				.domain([0, d3.max(schools, d => d.exemption)])
-				.range([0, 10]);
+		},
 
-			config.attributes.r = d => radius(d.exemption);
+		histogramFadeout() {
+
+			chart.scenes.histogram();
+
+			var config = chart.config;
+
+			config.style.opacity = 0;
 		},
 
 		histogram() {
@@ -92,6 +116,11 @@ let chart = chartFactory({
 			chart.scenes.map();
 
 			var config = chart.config;
+			var scales = config.scales;
+
+			scales.before.radius.range([1,10]);
+			scales.after.radius.range([1,1]);
+
 			var schools = config.datasets.schools;
 
 			var x = d3.scale.linear()
@@ -120,7 +149,7 @@ let chart = chartFactory({
 
 			binLengths.unshift(0);
 
-			config.attributes.cx = function(d, i) {
+			config.attributes.after.cx = function(d, i) {
 
 				// Given this element's index, find its bin.
 				var index = _.findIndex(binLengths, binLength => i < binLength) - 1;
@@ -130,9 +159,9 @@ let chart = chartFactory({
 				return x(bin.x);
 			};
 
-			config.attributes.cy = function(d, i) {
+			config.attributes.after.cy = function(d, i) {
 
-				// Given this element's index, find the bin's starting point.
+					// Given this element's index, find the bin's starting point.
 				// e.g. if i = 937, get 936
 				var startingPoint = _(binLengths)
 					.sortBy(datum => -datum)
@@ -361,7 +390,7 @@ module.exports = {
 // // 		config.scales.y.domain([0, 0]);
 // // 		config.scales.color.range([MAGIC.dark, MAGIC.dark]);
 
-// // 		config.attributes = {
+// // 		config.attributes.after = {
 // // 			x: d => config.scales.x(d.date),
 // // 			width: MAGIC.singleBarWidth,
 // // 			y: d => config.scales.y(d.y1),
@@ -402,7 +431,7 @@ module.exports = {
 // // 		config.scales.x.domain(d3.extent(config.data, d => d.date));
 // // 		config.scales.y.domain([0, d3.max(config.data, d => d.y1)]);
 
-// // 		config.attributes.width = config.scales.x.range()[1] / (config.data.length/2);
+// // 		config.attributes.after.width = config.scales.x.range()[1] / (config.data.length/2);
 
 // // 		config.axes.y.tickValues([0, 500, 1000, config.scales.y.domain()[1]]);
 // // 		config.displayAxes.x = true;
@@ -426,11 +455,11 @@ module.exports = {
 // // 			.value();
 // // 		config.scales.y.domain([0, maxLateTrips]);
 
-// // 		config.attributes.y = d => d.name === 'lateTrips' ?
+// // 		config.attributes.after.y = d => d.name === 'lateTrips' ?
 // // 			config.height - (config.scales.y(d.y0) - config.scales.y(d.y1)) :
 // // 			config.scales.y.range()[0];
 
-// // 		config.attributes.height = d => d.name === 'lateTrips' ?
+// // 		config.attributes.after.height = d => d.name === 'lateTrips' ?
 // // 			config.scales.y(d.y0) - config.scales.y(d.y1) :
 // // 			0;
 

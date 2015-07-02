@@ -28,7 +28,7 @@ let chart = {
 
 		this.setupUtilityVariables();
 		this.setupScales();
-		// this.setupAxes();
+		this.setupAxes();
 		this.scenes[scene](opts);
 		this.render();
 		// draw();
