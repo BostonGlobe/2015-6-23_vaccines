@@ -17,16 +17,28 @@ let chart = {
 		config.height = +config.svg.attr('_innerHeight');
 	},
 
+	getEasing() {
+		var config = this.config;
+		var easing = config.easing || {};
+		return config.moveForward ?
+			(easing.forward ? easing.forward : 'cubic-in-out') :
+			(easing.backward ? easing.backward : 'cubic-in-out');
+	},
+
 	getDuration() {
 		var config = this.config;
-		var duration = config.duration;
-		return config.moveForward ? duration.forward : duration.backward;
+		var duration = config.duration || {};
+		return config.moveForward ?
+			(duration.forward ? duration.forward : 0) :
+			(duration.backward ? duration.backward : 0);
 	},
 
 	getDelay() {
 		var config = this.config;
-		var delay = config.delay;
-		return config.moveForward ? delay.forward : delay.backward;
+		var delay = config.delay || {};
+		return config.moveForward ?
+			(delay.forward ? delay.forward : 0) :
+			(delay.backward ? delay.backward : 0);
 	},
 
 	render() {

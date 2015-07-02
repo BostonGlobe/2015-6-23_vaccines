@@ -8,11 +8,15 @@ module.exports = [
 			options: {
 				duration: {
 					forward: 1000,
-					backward: 1000
+					backward: 2000
 				},
 				delay: {
-					forward: (d, i) => i * 1,
-					backward: (d, i) => i * 1
+					forward: (d, i) => i * 3,
+					backward: (d, i) => i * 3
+				},
+				easing: {
+					forward: 'cubic-in-out',
+					backward: 'cubic-out'
 				}
 			}
 		},
@@ -27,6 +31,9 @@ module.exports = [
 				delay: {
 					forward: 0,
 					backward: 0
+				},
+				easing: {
+					backward: 'cubic-out'
 				}
 			}
 		}
@@ -42,9 +49,13 @@ module.exports = [
 				},
 				delay: {
 					forward: function(d, i) {
-						return i * 1;
+						return i * 3;
 					},
 					backward: 0
+				},
+				easing: {
+					forward: 'cubic-in',
+					backward: 'cubic-in'
 				}
 			}
 		},
@@ -59,6 +70,10 @@ module.exports = [
 				delay: {
 					forward: 1000,
 					backward: 0
+				},
+				easing: {
+					forward: 'cubic-in',
+					backward: 'cubic-in'
 				}
 			}
 		}
@@ -69,12 +84,15 @@ module.exports = [
 			scene: 'histogramFadeout',
 			options: {
 				duration: {
-					forward: 1000,
+					forward: 500,
 					backward: 0
 				},
 				delay: {
 					forward: 0,
 					backward: 0
+				},
+				easing: {
+					forward: 'cubic-out'
 				}
 			}
 		},
@@ -89,6 +107,9 @@ module.exports = [
 				delay: {
 					forward: 0,
 					backward: 0
+				},
+				easing: {
+					forward: 'cubic-out'
 				}
 			}
 		}

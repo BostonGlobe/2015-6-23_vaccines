@@ -36,6 +36,7 @@ let chart = chartFactory({
 			.transition()
 			.duration(chart.getDuration())
 			.delay(chart.getDelay())
+			.ease(chart.getEasing())
 			.attr(config.attributes);
 
 		// ENTER

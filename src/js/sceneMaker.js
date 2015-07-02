@@ -25,7 +25,7 @@ function setupChart(chartName, opts) {
 }
 
 // This will draw the scene in question.
-function drawScenes(sceneIndex, opts, moveForward) {
+function drawScenes(sceneIndex, opts, forward) {
 
 	// Get the correct scene definition(s).
 	var sceneDefinition = _.flatten([SCENE_DEFINITIONS[sceneIndex]]);
@@ -39,7 +39,7 @@ function drawScenes(sceneIndex, opts, moveForward) {
 		var options = Object.assign({}, definition.options, opts);
 
 		// Draw scene.
-		chart.draw(definition.scene, options, moveForward);
+		chart.draw(definition.scene, options, forward);
 	}
 
 	sceneDefinition.forEach(drawScene);
