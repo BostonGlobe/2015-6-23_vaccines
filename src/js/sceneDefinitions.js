@@ -4,29 +4,28 @@ module.exports = [
 	[
 		{
 			chart: 'bubbles',
-			scene: 'map',
+			scene: 'histogramFadeout',
 			options: {
 				duration: {
-					forward: 1000,
-					backward: 2000
+					forward: 0,
+					backward: 500
 				},
 				delay: {
-					forward: (d, i) => i * 3,
-					backward: (d, i) => i * 3
+					forward: 0,
+					backward: 0
 				},
 				easing: {
-					forward: 'cubic-in-out',
 					backward: 'cubic-out'
 				}
 			}
 		},
 		{
 			chart: 'histogram',
-			scene: 'setup',
+			scene: 'main',
 			options: {
 				duration: {
 					forward: 0,
-					backward: 0
+					backward: 500
 				},
 				delay: {
 					forward: 0,
@@ -48,10 +47,10 @@ module.exports = [
 					backward: 1000
 				},
 				delay: {
-					forward: function(d, i) {
+					forward: 0,
+					backward: function(d, i) {
 						return i * 3;
-					},
-					backward: 0
+					}
 				},
 				easing: {
 					forward: 'cubic-in',
@@ -65,15 +64,14 @@ module.exports = [
 			options: {
 				duration: {
 					forward: 1000,
-					backward: 1000
+					backward: 0
 				},
 				delay: {
-					forward: 1000,
+					forward: 0,
 					backward: 0
 				},
 				easing: {
-					forward: 'cubic-in',
-					backward: 'cubic-in'
+					forward: 'cubic-in'
 				}
 			}
 		}
@@ -81,14 +79,16 @@ module.exports = [
 	[
 		{
 			chart: 'bubbles',
-			scene: 'histogramFadeout',
+			scene: 'map',
 			options: {
 				duration: {
-					forward: 500,
+					forward: 2000,
 					backward: 0
 				},
 				delay: {
-					forward: 0,
+					forward: function(d, i) {
+						return i * 3;
+					},
 					backward: 0
 				},
 				easing: {
@@ -98,10 +98,10 @@ module.exports = [
 		},
 		{
 			chart: 'histogram',
-			scene: 'main',
+			scene: 'setup',
 			options: {
 				duration: {
-					forward: 1000,
+					forward: 0,
 					backward: 0
 				},
 				delay: {
@@ -109,7 +109,6 @@ module.exports = [
 					backward: 0
 				},
 				easing: {
-					forward: 'cubic-out'
 				}
 			}
 		}
