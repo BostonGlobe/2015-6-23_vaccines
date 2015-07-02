@@ -7,10 +7,14 @@ Please note: do not reproduce Boston Globe logos or fonts without written permis
 ## TODO
 
 ### large map
-- add shaded relief
-- add scale
-- add text annotations
-- animate bubbles
+- make initial fade in a bit more interesting
+- on bubbles to histogram transition, make it fast on end
+- add titles on map
+- add map
+- add titles on histogram
+- add axis labels on histogram
+- add beige bit of bar on histogram
+- handle all histogram to bubbles transition
 
 ## Install
 

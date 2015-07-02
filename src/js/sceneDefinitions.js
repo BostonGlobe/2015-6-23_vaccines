@@ -44,7 +44,7 @@ module.exports = [
 			chart: 'bubbles',
 			scene: 'histogramFadeout',
 			options: {
-				duration: 500,
+				duration: 250,
 				delay: 0
 			}
 		},
@@ -52,7 +52,7 @@ module.exports = [
 			chart: 'histogram',
 			scene: 'main',
 			options: {
-				duration: 1000,
+				duration: 500,
 				delay: 0
 			}
 		}

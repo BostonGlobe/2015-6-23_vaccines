@@ -15,9 +15,6 @@ function log(s) {
 	console.log(JSON.stringify(s, null, 4));
 }
 
-// This is used to trigger native events.
-var events = {};
-
 function setupChart(chartName, opts) {
 
 	// Retrieve the chart file.
@@ -58,12 +55,6 @@ function atBeginning() {
 	return currentSceneIndex === 0;
 }
 
-// This creates native events like 'click'.
-function createEvents() {
-	events.click = document.createEvent('MouseEvent');
-	events.click.initEvent('click', true, true);
-}
-
 // This will make buttons. Call this once.
 function makeButtons() {
 
@@ -71,6 +62,40 @@ function makeButtons() {
 		<button class='btn previous btn--small btn--secondary btn--disabled' disabled>Previous</button>
 		<button class='btn next     btn--small btn--primary'>Next</button>
 	`;
+}
+
+function resetButtons() {
+
+	var previous = document.querySelector('.scene-maker.buttons button.previous');
+	var next = document.querySelector('.scene-maker.buttons button.next');
+
+	// Enable/disable buttons accordingly.
+	previous.disabled = atBeginning();
+	next.disabled = atEnd();
+
+	// Style buttons accordingly.
+	d3.select(previous).classed('btn--disabled', atBeginning());
+	d3.select(next).classed('btn--disabled', atEnd());
+}
+
+function moveForward(forward) {
+
+	if (forward) {
+		// only go forward if we're not at the end
+		if (!atEnd()) {
+			currentSceneIndex++;
+		}
+	} else {
+		// only go back if we're not at the beginning
+		if (!atBeginning()) {
+			currentSceneIndex--;
+		}
+	}
+
+	resetButtons();
+
+	// Draw scene.
+	drawScenes(currentSceneIndex);
 }
 
 // This will wire buttons to their event handlers.
@@ -84,31 +109,8 @@ function wireButtons() {
 
 		var html = e.target.innerHTML;
 		var isNext = html === 'Next';
-		var previous = document.querySelector('.scene-maker.buttons button.previous');
-		var next = document.querySelector('.scene-maker.buttons button.next');
 
-		if (isNext) {
-			// only go forward if we're not at the end
-			if (!atEnd()) {
-				currentSceneIndex++;
-			}
-		} else {
-			// only go back if we're not at the beginning
-			if (!atBeginning()) {
-				currentSceneIndex--;
-			}
-		}
-
-		// Enable/disable buttons accordingly.
-		previous.disabled = atBeginning();
-		next.disabled = atEnd();
-
-		// Style buttons accordingly.
-		d3.select(previous).classed('btn--disabled', atBeginning());
-		d3.select(next).classed('btn--disabled', atEnd());
-
-		// Draw scene.
-		drawScenes(currentSceneIndex);
+		moveForward(isNext);
 	}
 
 	// Add event listeners to buttons.
@@ -189,12 +191,19 @@ module.exports = {
 
 		SCENE_DEFINITIONS = sceneDefinitions;
 
-		createEvents();
 		makeButtons();
 		wireButtons();
 	},
 
-	resize () {
+	next() {
+		moveForward(true);
+	},
+
+	previous() {
+		moveForward(false);
+	},
+
+	resize() {
 		redraw({
 			duration: 0,
 			delay: 0

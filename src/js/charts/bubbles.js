@@ -4,10 +4,19 @@ var d3 = require('d3');
 var d3util = require('../d3util');
 let chartFactory = require('./chartFactory');
 var _ = require('lodash');
+var sceneMaker = require('../sceneMaker');
 
 // Utility function.
 function log(s) {
 	console.log(JSON.stringify(s, null, 4));
+}
+
+// from https://groups.google.com/forum/#!topic/d3-js/WC_7Xi6VV50
+function endall(transition, callback) {
+	var n = 0;
+	transition
+		.each(function() { ++n; })
+		.each('end', function() { if(!--n) { callback.apply(this, arguments); } });
 }
 
 let chart = chartFactory({
@@ -17,15 +26,10 @@ let chart = chartFactory({
 	config: {
 		binCount: 20,
 		datasets: require('../datasets'),
-		scales: {
-			before: {},
-			after: {}
-		},
-		attributes: {
-			before: {},
-			after: {}
-		},
-		style: {}
+		scales: {},
+		attributes: {},
+		style: {},
+		end: function() {}
 	},
 
 	databind() {
@@ -39,16 +43,18 @@ let chart = chartFactory({
 			.data(config.datasets.schools, d => [d.school, d.city].join(''));
 
 		// UPDATE
-		circles.attr(config.attributes.before)
+		circles
 			.transition()
 			.duration(duration)
 			.delay(delay)
-			.attr(config.attributes.after)
+			.call(endall, config.end)
+			.attr(config.attributes)
 			.style(config.style);
 
 		// ENTER
 		circles.enter().append('circle')
-			.attr(config.attributes.after)
+			.attr(config.attributes)
+			.attr('class', d => d.exemption > 0 ? 'some' : 'none')
 			.style(config.style);
 	},
 
@@ -74,23 +80,20 @@ let chart = chartFactory({
 			var x = d => config.projection([d.lng, d.lat])[0];
 			var y = d => config.projection([d.lng, d.lat])[1];
 
-			config.attributes.after = {
+			config.attributes = {
 				cx: d => x(d),
 				cy: d => y(d),
 				r: 0
 			};
 
-			scales.before.radius = d3.scale.sqrt()
-				.domain([0, d3.max(schools, d => d.exemption)])
-				.range([0, 10]);
-
-			scales.after.radius = d3.scale.sqrt()
+			scales.radius = d3.scale.sqrt()
 				.domain([0, d3.max(schools, d => d.exemption)])
 				.range([0, 10]);
 
 			config.style.opacity = 0;
-			config.attributes.before.r = d => scales.before.radius(d.exemption);
-			config.attributes.after.r = d => scales.after.radius(d.exemption);
+			config.attributes.r = d => d.exemption > 0 ? scales.radius(d.exemption) : 1;
+
+			config.end = function() {};
 		},
 
 		map() {
@@ -100,15 +103,7 @@ let chart = chartFactory({
 			var config = chart.config;
 			config.style.opacity = 1;
 
-		},
-
-		histogramFadeout() {
-
-			chart.scenes.histogram();
-
-			var config = chart.config;
-
-			config.style.opacity = 0;
+			config.end = function() {};
 		},
 
 		histogram() {
@@ -116,10 +111,6 @@ let chart = chartFactory({
 			chart.scenes.map();
 
 			var config = chart.config;
-			var scales = config.scales;
-
-			scales.before.radius.range([1,10]);
-			scales.after.radius.range([1,1]);
 
 			var schools = config.datasets.schools;
 
@@ -149,7 +140,7 @@ let chart = chartFactory({
 
 			binLengths.unshift(0);
 
-			config.attributes.after.cx = function(d, i) {
+			config.attributes.cx = function(d, i) {
 
 				// Given this element's index, find its bin.
 				var index = _.findIndex(binLengths, binLength => i < binLength) - 1;
@@ -159,7 +150,7 @@ let chart = chartFactory({
 				return x(bin.x);
 			};
 
-			config.attributes.after.cy = function(d, i) {
+			config.attributes.cy = function(d, i) {
 
 					// Given this element's index, find the bin's starting point.
 				// e.g. if i = 937, get 936
@@ -169,6 +160,23 @@ let chart = chartFactory({
 
 				return y(i - startingPoint + 1);
 			};
+
+			config.attributes.r = 1;
+
+			config.end = function() {
+				sceneMaker.next();
+			};
+		},
+
+		histogramFadeout() {
+
+			chart.scenes.histogram();
+
+			var config = chart.config;
+
+			config.style.opacity = 0;
+
+			config.end = function() {};
 		}
 	}
 
@@ -390,7 +398,7 @@ module.exports = {
 // // 		config.scales.y.domain([0, 0]);
 // // 		config.scales.color.range([MAGIC.dark, MAGIC.dark]);
 
-// // 		config.attributes.after = {
+// // 		config.attributes = {
 // // 			x: d => config.scales.x(d.date),
 // // 			width: MAGIC.singleBarWidth,
 // // 			y: d => config.scales.y(d.y1),

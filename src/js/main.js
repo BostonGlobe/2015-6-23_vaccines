@@ -19,7 +19,7 @@ sceneMaker.start();
 
 // Wait two seconds, then wire resize event.
 setTimeout(function() {
-	
+
 	var resize = _.debounce(function() {
 		sceneMaker.resize();
 	}, 200);
