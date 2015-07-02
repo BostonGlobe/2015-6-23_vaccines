@@ -35,8 +35,6 @@ let chart = chartFactory({
 	databind() {
 
 		var config = chart.config;
-		var duration = config.duration;
-		var delay = config.delay;
 
 		// DATA JOINS
 		var circles = config.main.selectAll('circle')
@@ -45,8 +43,8 @@ let chart = chartFactory({
 		// UPDATE
 		circles
 			.transition()
-			.duration(duration)
-			.delay(delay)
+			.duration(chart.getDuration())
+			.delay(chart.getDelay())
 			.call(endall, config.end)
 			.attr(config.attributes)
 			.style(config.style);
@@ -164,7 +162,7 @@ let chart = chartFactory({
 			config.attributes.r = 1;
 
 			config.end = function() {
-				sceneMaker.next();
+				// sceneMaker.next();
 			};
 		},
 

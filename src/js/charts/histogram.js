@@ -26,8 +26,6 @@ let chart = chartFactory({
 
 		var config = chart.config;
 		var data = config.histogramValues;
-		var duration = config.duration;
-		var delay = config.delay;
 
 		// DATAJOIN
 		var bars = config.main.selectAll('rect')
@@ -36,8 +34,8 @@ let chart = chartFactory({
 		// UPDATE
 		bars
 			.transition()
-			.duration(duration)
-			.delay(delay)
+			.duration(chart.getDuration())
+			.delay(chart.getDelay())
 			.attr(config.attributes);
 
 		// ENTER
@@ -61,11 +59,6 @@ let chart = chartFactory({
 		config.histogramValues = d3.layout.histogram()
 			.bins(scales.x.ticks(config.binCount))(schools.map(d => d.exemption));
 
-		// debugger;
-
-		// scales.x
-		// 	.domain([0,46]);
-
 		scales.y = d3.scale.linear()
 			.domain([0, d3.max(config.histogramValues, d => d.y)])
 			.range([config.height, 0]);
@@ -85,19 +78,18 @@ let chart = chartFactory({
 			.scale(scales.y)
 			.orient('left')
 			.tickSize(-config.width)
-			.tickValues([100,300,500,scales.y.domain()[1]]);
+			.tickValues([100, 300, 500, scales.y.domain()[1]]);
 	},
 
 	displayAxes() {
 
 		var config = chart.config;
-		var duration = config.duration;
 		var axes = config.axes;
 
 		// X X X X X X X X X X X X X X X X X X X X X X
 		var xAxisSelection = config.scenes.select('g.x.axis')
 			.transition()
-			.duration(duration)
+			.duration(chart.getDuration())
 			.call(axes.x);
 
 		// Fade it out
@@ -106,7 +98,7 @@ let chart = chartFactory({
 		// Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y
 		var yAxisSelection = config.scenes.select('g.y.axis')
 			.transition()
-			.duration(duration)
+			.duration(chart.getDuration())
 			.call(axes.y);
 
 		// Fade it out

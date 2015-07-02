@@ -21,11 +21,11 @@ function setupChart(chartName, opts) {
 	var chart = require(`./charts/${chartName}`);
 
 	// Draw setup.
-	chart.draw('setup', opts);
+	chart.draw('setup', opts, true);
 }
 
 // This will draw the scene in question.
-function drawScenes(sceneIndex, opts) {
+function drawScenes(sceneIndex, opts, moveForward) {
 
 	// Get the correct scene definition(s).
 	var sceneDefinition = _.flatten([SCENE_DEFINITIONS[sceneIndex]]);
@@ -39,7 +39,7 @@ function drawScenes(sceneIndex, opts) {
 		var options = Object.assign({}, definition.options, opts);
 
 		// Draw scene.
-		chart.draw(definition.scene, options);
+		chart.draw(definition.scene, options, moveForward);
 	}
 
 	sceneDefinition.forEach(drawScene);
@@ -95,7 +95,7 @@ function moveForward(forward) {
 	resetButtons();
 
 	// Draw scene.
-	drawScenes(currentSceneIndex);
+	drawScenes(currentSceneIndex, {}, forward);
 }
 
 // This will wire buttons to their event handlers.
@@ -182,7 +182,7 @@ function redraw(opts = {}) {
 	}));
 
 	// Draw the current scene.
-	drawScenes(currentSceneIndex, opts);
+	drawScenes(currentSceneIndex, opts, true);
 }
 
 module.exports = {

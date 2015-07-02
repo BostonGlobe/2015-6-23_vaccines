@@ -7,7 +7,6 @@ Please note: do not reproduce Boston Globe logos or fonts without written permis
 ## TODO
 
 ### large map
-- handle all histogram to bubbles transition
 - add beige bit of bar on histogram
 - make initial fade in a bit more interesting
 - on bubbles to histogram transition, make it fast on end
