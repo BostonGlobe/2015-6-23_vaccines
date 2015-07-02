@@ -16,18 +16,12 @@ var schools = _(topojson.feature(ma, ma.objects.schools).features)
 		return {
 			school: properties['School.Name'],
 			city: properties.City,
-			exemption: Math.round(+properties.Exemption),
+			exemption: Math.ceil(+properties.Exemption),
 			lat: coordinates[1],
 			lng: coordinates[0]
 		};
 	})
 	.sortBy('exemption')
-	// .filter(function(v, i) {
-	// 	return v.exemption;
-	// })
-	// // .reverse()
-	// .take(3)
-	// .take(500)
 	.value();
 
 module.exports = {

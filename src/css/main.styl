@@ -10,61 +10,132 @@ $colors_bw_4 = #DEDFE0
 $benton = 'Benton', Helvetica, Arial, sans-serif
 $sansSerif = Helvetica, Arial, sans-serif
 
-.scene-maker.scene
-	width 100%
-	height 0
-	padding-bottom 50%
+// $bp = 480px
+
+$mq_vars = {
+    bp-1: '(min-width: 640px)'
+}
+
+$mq_cache = {}
+
+mq($condition)
+  helper($condition)
+    unless $mq_cache[$condition]
+      $mq_cache[$condition] = ()
+    push($mq_cache[$condition], block)
+
+  +helper($condition)
+    {selector() + ''}
+      {block}
+            
+apply_mq_cache()
+  for $mq, $blocks in $mq_cache
+    $mq = unquote($mq_vars[$mq] || $mq)
+    $mq = '(%s)' % $mq unless match('\(', $mq)
+    $mq = 'only screen and %s' % $mq
+    @media $mq
+      for $block in $blocks
+        {$block}
+
+.hide
+	display none
+
+.scene-maker.container
 	position relative
 	
-	svg
+	.scene-maker.chatter
 		position absolute
 		top 0
 		left 0
-	
-	.map
-		path
-			fill $colors_map_3
-			fill-opacity 0.5
-	
-	.bubbles
-		circle.none
-			fill $colors_bw_4
-			stroke @fill
-		circle.some
-			fill darken($colors_highlight_red, 25%)
-			fill-opacity 0.35
-			stroke darken(@fill, 50%)
-			stroke-width 0.25px
-			
-	.histogram
-		rect
-			shape-rendering crispEdges
-			fill darken($colors_highlight_red, 25%)
-			&.zero
-				fill $colors_map_3
-				
-
-	.axis
-		shape-rendering crispEdges
+		width 100%
+		height 100%
+		line-height 1.5em
 		
-		&.x
-			path,
-			line
-				fill none
-				stroke $colors_map_2
-
-		&.y
-			path.domain
-				fill none
-				stroke none
-			line
-				fill none
-				stroke white
-				// stroke red
-				// stroke none
-				// stroke none
-				// stroke red
-		
-		text
+		.chatter
 			font-family $sansSerif
-			font-size 10px
+			position absolute
+			
+			span.highlight
+				padding 0.2em 0.4em
+				font-weight bold
+				
+				&.zero
+					background $colors_map_3 
+					color black
+				&.some
+					background darken($colors_highlight_red, 25%)
+					color white
+			
+			&[data-step='0']
+				top 2em
+				left 5em
+				width 18em
+				
+			&[data-step='2']
+				top 55%
+				// bottom 0
+				left 1em
+				width 50%
+			
+
+	.scene-maker.scene
+		width 100%
+		height 0
+		
+		padding-bottom 75%
+		
+		+mq('bp-1')
+			padding-bottom 50%
+		
+		position relative
+		
+		svg
+			position absolute
+			top 0
+			left 0
+		
+		.map
+			path
+				fill $colors_map_3
+				fill-opacity 0.5
+		
+		.bubbles
+			circle.none
+				fill $colors_bw_4
+				stroke @fill
+			circle.some
+				fill darken($colors_highlight_red, 25%)
+				fill-opacity 0.35
+				stroke darken(@fill, 50%)
+				stroke-width 0.25px
+				
+		.histogram
+			rect
+				shape-rendering crispEdges
+				fill darken($colors_highlight_red, 25%)
+				&.zero
+					fill $colors_map_3
+					
+
+		.axis
+			shape-rendering crispEdges
+			
+			&.x
+				path,
+				line
+					fill none
+					stroke $colors_map_2
+
+			&.y
+				path.domain
+					fill none
+					stroke none
+				line
+					fill none
+					stroke white
+			
+			text
+				font-family $sansSerif
+				font-size 10px
+
+apply_mq_cache()

@@ -3,6 +3,7 @@
 // Load libraries.
 var d3 = require('d3');
 var _ = require('lodash');
+var DOMutil = require('./DOMutil');
 
 // This will hold the SCENE_DEFINITIONS array object.
 var SCENE_DEFINITIONS;
@@ -43,6 +44,13 @@ function drawScenes(sceneIndex, opts, forward) {
 	}
 
 	sceneDefinition.forEach(drawScene);
+
+	// Draw this step's chatter.
+	// Get all chatters and hide them.
+	var chatters = document.querySelectorAll('.scene-maker.chatter .chatter');
+	for (let i = 0; i < chatters.length; i++) {
+		DOMutil.addClass(chatters[i], 'hide');
+	}
 }
 
 // Check if we're at the end.

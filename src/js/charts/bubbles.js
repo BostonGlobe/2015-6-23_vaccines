@@ -5,6 +5,7 @@ var d3util = require('../d3util');
 let chartFactory = require('./chartFactory');
 var _ = require('lodash');
 var sceneMaker = require('../sceneMaker');
+var DOMutil = require('../DOMutil');
 
 // Utility function.
 function log(s) {
@@ -102,7 +103,11 @@ let chart = chartFactory({
 			var config = chart.config;
 			config.style.opacity = 1;
 
-			config.end = function() {};
+			config.end = function() {
+				// Get correct chatter and show it.
+				var chatter = document.querySelector(`.scene-maker.chatter .chatter[data-step='2']`);
+				DOMutil.removeClass(chatter, 'hide');
+			};
 		},
 
 		histogram() {
@@ -173,7 +178,11 @@ let chart = chartFactory({
 
 			config.style.opacity = 0;
 
-			config.end = function() {};
+			config.end = function() {
+				// Get correct chatter and show it.
+				var chatter = document.querySelector(`.scene-maker.chatter .chatter[data-step='0']`);
+				DOMutil.removeClass(chatter, 'hide');
+			};
 		}
 	}
 
