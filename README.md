@@ -15,6 +15,7 @@ Please note: do not reproduce Boston Globe logos or fonts without written permis
 - add titles on histogram
 - add axis labels on histogram
 - make 41.7 school still show up on histogram
+- add easter egg when clicking too fast
 
 ## Install
 

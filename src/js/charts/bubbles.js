@@ -40,8 +40,6 @@ let chart = chartFactory({
 		var circles = config.main.selectAll('circle')
 			.data(config.datasets.schools, d => [d.school, d.city].join(''));
 
-		console.log(chart.getEasing());
-
 		// UPDATE
 		circles
 			.transition()
