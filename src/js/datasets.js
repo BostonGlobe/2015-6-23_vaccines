@@ -16,7 +16,7 @@ var schools = _(topojson.feature(ma, ma.objects.schools).features)
 		return {
 			school: properties['School.Name'],
 			city: properties.City,
-			exemption: +properties.Exemption,
+			exemption: Math.round(+properties.Exemption),
 			lat: coordinates[1],
 			lng: coordinates[0]
 		};

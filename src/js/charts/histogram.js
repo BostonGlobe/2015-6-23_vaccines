@@ -15,7 +15,7 @@ let chart = chartFactory({
 	config: {
 		datasets: require('../datasets'),
 		histogramValues: [],
-		binCount: 20,
+		binCount: 40,
 		scales: {},
 		axes: {},
 		attributes: {},
@@ -41,7 +41,8 @@ let chart = chartFactory({
 
 		// ENTER
 		bars.enter().append('rect')
-			.attr(config.attributes);
+			.attr(config.attributes)
+			.attr('class', (d, i) => i === 0 ? 'zero' : '');
 
 		chart.displayAxes();
 	},
@@ -72,14 +73,13 @@ let chart = chartFactory({
 
 		config.axes.x = d3.svg.axis()
 			.scale(scales.x)
-			.orient('bottom')
-			.tickValues(config.histogramValues.map(d => d.x));
+			.orient('bottom');
 
 		config.axes.y = d3.svg.axis()
 			.scale(scales.y)
 			.orient('left')
 			.tickSize(-config.width)
-			.tickValues([100, 300, 500, scales.y.domain()[1]]);
+			.tickValues([100, 200, 300, 400, scales.y.domain()[1]]);
 	},
 
 	displayAxes() {

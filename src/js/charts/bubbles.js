@@ -24,7 +24,7 @@ let chart = chartFactory({
 	NAME: 'bubbles',
 
 	config: {
-		binCount: 20,
+		binCount: 40,
 		datasets: require('../datasets'),
 		scales: {},
 		attributes: {},

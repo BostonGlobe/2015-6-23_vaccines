@@ -7,14 +7,14 @@ Please note: do not reproduce Boston Globe logos or fonts without written permis
 ## TODO
 
 ### large map
-- add map outline after all dots are done coloring in
-- add beige bit of bar on histogram
-- make initial fade in a bit more interesting
+
 - add titles on map
 - add map
 - add titles on histogram
 - add axis labels on histogram
-- make 41.7 school still show up on histogram
+
+- add map outline after all dots are done coloring in
+- make initial fade in a bit more interesting
 - add easter egg when clicking too fast
 
 ## Install
