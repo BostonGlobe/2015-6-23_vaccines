@@ -94,10 +94,6 @@ apply_mq_cache()
 			top 0
 			left 0
 		
-		.map
-			path
-				fill $colors_map_3
-				fill-opacity 0.5
 		
 		.bubbles
 			circle.none
@@ -108,6 +104,9 @@ apply_mq_cache()
 				fill-opacity 0.35
 				stroke darken(@fill, 50%)
 				stroke-width 0.25px
+			path.map
+				fill $colors_map_3
+				fill-opacity 0.5
 				
 		.histogram
 			rect

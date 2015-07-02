@@ -1,6 +1,7 @@
 'use strict';
 
 var d3 = require('d3');
+var topojson = require('topojson');
 var d3util = require('../d3util');
 let chartFactory = require('./chartFactory');
 var _ = require('lodash');
@@ -30,16 +31,30 @@ let chart = chartFactory({
 		scales: {},
 		attributes: {},
 		style: {},
-		end: function() {}
+		end: function() {},
+		showMap: false
 	},
 
 	databind() {
 
 		var config = chart.config;
+		var datasets = config.datasets;
+
+		// DATA JOINS
+		var paths = config.main.selectAll('path.map')
+			.data(datasets.state);
+
+		// ENTER
+		paths.enter().append('path')
+			.style('opacity', 0)
+			.attr({
+				'class': 'map',
+				d: config.projectionPath.path
+			});
 
 		// DATA JOINS
 		var circles = config.main.selectAll('circle')
-			.data(config.datasets.schools, d => [d.school, d.city].join(''));
+			.data(datasets.schools, d => [d.school, d.city].join(''));
 
 		// UPDATE
 		circles
@@ -71,14 +86,16 @@ let chart = chartFactory({
 			var scales = config.scales;
 			var schools = datasets.schools;
 
-			config.projection = d3util.prepareProjectionPath({
+			config.projectionPath = d3util.prepareProjectionPath({
 				datum: datasets.state[0],
 				width: config.width,
 				height: config.height
-			}).projection;
+			});
 
-			var x = d => config.projection([d.lng, d.lat])[0];
-			var y = d => config.projection([d.lng, d.lat])[1];
+			var projection = config.projectionPath.projection;
+
+			var x = d => projection([d.lng, d.lat])[0];
+			var y = d => projection([d.lng, d.lat])[1];
 
 			config.attributes = {
 				cx: d => x(d),
@@ -107,6 +124,14 @@ let chart = chartFactory({
 				// Get correct chatter and show it.
 				var chatter = document.querySelector(`.scene-maker.chatter .chatter[data-step='2']`);
 				DOMutil.removeClass(chatter, 'hide');
+
+				// Show map
+				config.main.selectAll('path.map')
+					.transition()
+					.duration(chart.getDuration())
+					.delay(chart.getDelay())
+					.ease(chart.getEasing())
+					.style('opacity', 1);
 			};
 		},
 
@@ -168,6 +193,14 @@ let chart = chartFactory({
 			config.attributes.r = 1;
 
 			config.end = config.moveForward ? sceneMaker.next : sceneMaker.previous;
+
+			// Hide map
+			config.main.selectAll('path.map')
+				.transition()
+				.duration(chart.getDuration())
+				.delay(chart.getDelay())
+				.ease(chart.getEasing())
+				.style('opacity', 0);
 		},
 
 		histogramFadeout() {

@@ -7,15 +7,12 @@ Please note: do not reproduce Boston Globe logos or fonts without written permis
 ## TODO
 
 ### large map
-
+- add map annotations
+- figure out right aspect ratio for various breakpoints
 - add titles on map
-- add map
 - add titles on histogram
 - add axis labels on histogram
 - add legend
-
-- add map outline after all dots are done coloring in
-- make initial fade in a bit more interesting
 - add easter egg when clicking too fast
 
 ## Install
