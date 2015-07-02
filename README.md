@@ -12,6 +12,7 @@ Please note: do not reproduce Boston Globe logos or fonts without written permis
 - add map
 - add titles on histogram
 - add axis labels on histogram
+- add legend
 
 - add map outline after all dots are done coloring in
 - make initial fade in a bit more interesting
