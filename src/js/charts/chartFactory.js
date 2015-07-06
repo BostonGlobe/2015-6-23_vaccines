@@ -10,6 +10,7 @@ let chart = {
 		var config = this.config;
 
 		config.svg = d3.select(`.scene-maker.scene svg.${this.NAME}`);
+		config.annotations = d3.select(`.scene-maker.scene div.annotations.${this.NAME}`);
 		config.scenes = config.svg.select('g.scenes');
 		config.main = config.scenes.select('g.main');
 

@@ -155,6 +155,15 @@ function redraw(opts = {}) {
 				'class': name
 			});
 
+		d3.select(container).append('div')
+			.attr('class', 'annotations ' + name)
+			.style({
+				width: width + 'px',
+				height: height + 'px',
+				top: margin.top + 'px',
+				left: margin.left + 'px'
+			});
+
 		// Define g.
 		var g = svg.append('g')
 			.attr({

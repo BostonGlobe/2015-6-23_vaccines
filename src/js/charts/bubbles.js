@@ -1,7 +1,6 @@
 'use strict';
 
 var d3 = require('d3');
-var topojson = require('topojson');
 var d3util = require('../d3util');
 let chartFactory = require('./chartFactory');
 var _ = require('lodash');
@@ -69,8 +68,42 @@ let chart = chartFactory({
 		// ENTER
 		circles.enter().append('circle')
 			.attr(config.attributes)
-			.attr('class', d => d.exemption > 0 ? 'some' : 'none')
+			.attr('class', function (d) {
+				var list = [];
+				list.push(d.exemption > 0 ? 'some' : 'none');
+				list.push(d.highlight ? 'highlight' : '');
+
+				return list.join(' ');
+			})
 			.style(config.style);
+
+		// DATA JOINS
+		var labels = config.annotations.selectAll('div.annotation')
+			.data(_.filter(datasets.schools, {highlight: true}), d => [d.school, d.city].join(''));
+
+		// UPDATE
+		// circles
+		// 	.transition()
+		// 	.duration(chart.getDuration())
+		// 	.delay(chart.getDelay())
+		// 	.ease(chart.getEasing())
+		// 	.call(endall, config.end)
+		// 	.attr(config.attributes)
+		// 	.style(config.style);
+
+		// ENTER
+		labels.enter().append('div')
+			.attr({
+				'class': 'annotation'
+			})
+			.style({
+				top: d => config.attributes.cy(d) + 'px',
+				left: d => config.attributes.cx(d) + 'px'
+			})
+			.html((d, i) => `
+				<div><span class='rate iota'>${d.exemption}%${i === 0 ? ' exempt' : ''}</span></div>
+				<div><span class='school'>${DOMutil.titleCase(d.school)}, ${DOMutil.titleCase(d.city)}</span></div>
+			`);
 	},
 
 	setupScales() {},
