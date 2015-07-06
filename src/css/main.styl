@@ -13,7 +13,8 @@ $sansSerif = Helvetica, Arial, sans-serif
 // $bp = 480px
 
 $mq_vars = {
-    bp-1: '(min-width: 640px)'
+    bp-1: '(min-width: 400px)'
+    bp-2: '(min-width: 500px)'
 }
 
 $mq_cache = {}
@@ -67,25 +68,29 @@ apply_mq_cache()
 					color white
 			
 			&[data-step='0']
-				top 2em
-				left 5em
+				top 16%
+				left 25%
 				width 18em
-				
+				+mq('bp-2')
+					top 22%
+					left 30%
+
 			&[data-step='2']
 				top 55%
-				// bottom 0
-				left 1em
+				left 5%
 				width 50%
-			
+				+mq('bp-2')
+					top 60%
+					width 30%
+					left 25%
+		
+
 
 	.scene-maker.scene
 		width 100%
 		height 0
 		
-		padding-bottom 75%
-		
-		+mq('bp-1')
-			padding-bottom 50%
+		padding-bottom 65%
 		
 		position relative
 
@@ -96,11 +101,11 @@ apply_mq_cache()
 				font-family $sansSerif
 				transform translateY(-100%)
 				line-height 0.75em
-				max-width 6em
-				margin-top -0.75em
+				max-width 5em
+				margin-top -0.5em
 				margin-left -1em
 				background alpha(white, 0.5)
-				padding 0.25em
+				padding 0.25em 0.25em 0.1em 0.25em
 				span
 					// text-shadow 0px 0px 0px $colors_map_3
 					&.rate
@@ -123,7 +128,8 @@ apply_mq_cache()
 				stroke-width 0.25px
 			circle.highlight
 				// stroke black
-				stroke-width 1px
+				stroke-width 2px
+				fill-opacity 1
 			path.map
 				fill $colors_map_3
 				fill-opacity 0.5

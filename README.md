@@ -7,12 +7,13 @@ Please note: do not reproduce Boston Globe logos or fonts without written permis
 ## TODO
 
 ### large map
+- maybe shift x axis ticks by half a unit
 - add map annotations
 - figure out right aspect ratio for various breakpoints
 - add titles on map
 - add titles on histogram
 - add axis labels on histogram
-- add legend
+- add table of towns
 - add easter egg when clicking too fast
 
 ## Install

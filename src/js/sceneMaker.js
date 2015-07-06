@@ -137,7 +137,7 @@ function redraw(opts = {}) {
 	container.innerHTML = '';
 
 	// Define margins.
-	var margin = {top: 25, right: 25, bottom: 25, left: 25};
+	var margin = {top: 25, right: 40, bottom: 25, left: 25};
 
 	// Define svg dimensions.
 	var width = container.offsetWidth - margin.left - margin.right;
@@ -156,7 +156,7 @@ function redraw(opts = {}) {
 			});
 
 		d3.select(container).append('div')
-			.attr('class', 'annotations ' + name)
+			.attr('class', 'annotations hide ' + name)
 			.style({
 				width: width + 'px',
 				height: height + 'px',

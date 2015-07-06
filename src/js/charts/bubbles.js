@@ -75,21 +75,18 @@ let chart = chartFactory({
 
 				return list.join(' ');
 			})
-			.style(config.style);
+			.style(config.style)
+			.on('mouseover', function (d) {
+				d3.select(this).classed('highlight', true);
+				console.log(d);
+			})
+			.on('mouseout', function() {
+				d3.select(this).classed('highlight', false);
+			});
 
 		// DATA JOINS
 		var labels = config.annotations.selectAll('div.annotation')
 			.data(_.filter(datasets.schools, {highlight: true}), d => [d.school, d.city].join(''));
-
-		// UPDATE
-		// circles
-		// 	.transition()
-		// 	.duration(chart.getDuration())
-		// 	.delay(chart.getDelay())
-		// 	.ease(chart.getEasing())
-		// 	.call(endall, config.end)
-		// 	.attr(config.attributes)
-		// 	.style(config.style);
 
 		// ENTER
 		labels.enter().append('div')
@@ -144,6 +141,7 @@ let chart = chartFactory({
 			config.attributes.r = d => d.exemption > 0 ? scales.radius(d.exemption) : 1;
 
 			config.end = function() {};
+			config.annotations.classed('hide', true);
 		},
 
 		map() {
@@ -165,6 +163,8 @@ let chart = chartFactory({
 					.delay(chart.getDelay())
 					.ease(chart.getEasing())
 					.style('opacity', 1);
+
+				config.annotations.classed('hide', false);
 			};
 		},
 
@@ -214,7 +214,7 @@ let chart = chartFactory({
 
 			config.attributes.cy = function(d, i) {
 
-					// Given this element's index, find the bin's starting point.
+				// Given this element's index, find the bin's starting point.
 				// e.g. if i = 937, get 936
 				var startingPoint = _(binLengths)
 					.sortBy(datum => -datum)
