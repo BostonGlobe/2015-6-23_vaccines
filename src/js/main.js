@@ -43,8 +43,8 @@ function makeTownTables() {
 				.map(function(a, b) {
 					return `
 						<tr>
-							<td>${DOMutil.titleCase(a.school)}</td>
-							<td>${a.exemption}%</td>
+							<td class='school'>${DOMutil.titleCase(a.school)}</td>
+							<td class='rate'>${a.exemption}%</td>
 						</tr>
 					`;
 				})
@@ -56,8 +56,8 @@ function makeTownTables() {
 					<caption>${DOMutil.titleCase(i)}</caption>
 					<thead>
 						<tr>
-							<th>School</th>
-							<th>Exemption rate</th>
+							<th class='iota school'>School</th>
+							<th class='iota rate'>Exemption rate</th>
 						</tr>
 					</thead>
 					<tbody>
