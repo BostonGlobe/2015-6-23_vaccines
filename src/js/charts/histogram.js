@@ -45,6 +45,29 @@ let chart = chartFactory({
 			.attr('class', (d, i) => i === 0 ? 'zero' : '');
 
 		chart.displayAxes();
+
+		// DATA JOINS
+		var labels = config.annotations.selectAll('div.annotation')
+			.data([
+				{ text: 'Schools', top: '-20px', left: '-25px', bottom: 'initial', right: 'initial' },
+				{ text: 'Exemption rate', top: 'initial', left: 'initial', bottom: '3px', right: '0' }
+			]);
+
+		// ENTER
+		labels.enter().append('div')
+			.attr({
+				'class': 'annotation axis iota'
+			})
+			.style({
+				top: d => d.top,
+				left: d => d.left,
+				bottom: d => d.bottom,
+				right: d => d.right
+			})
+			.html(d => `
+				<div><span class=''>${d.text}</span></div>
+			`);
+
 	},
 
 	setupScales() {
@@ -74,6 +97,12 @@ let chart = chartFactory({
 		config.axes.x = d3.svg.axis()
 			.scale(scales.x)
 			.orient('bottom');
+
+		var tickCount = config.axes.x.ticks();
+
+		config.axes.x.tickFormat(function(d, i) {
+			return i < (tickCount - 1) ? d : d + '%';
+		});
 
 		config.axes.y = d3.svg.axis()
 			.scale(scales.y)
@@ -127,6 +156,7 @@ let chart = chartFactory({
 			};
 
 			config.displayAxes = false;
+			config.annotations.classed('hide', true);
 		},
 
 		main() {
@@ -139,6 +169,7 @@ let chart = chartFactory({
 			config.attributes.width = d => scales.x(d.dx) - 1;
 
 			config.displayAxes = true;
+			config.annotations.classed('hide', false);
 		}
 
 	}

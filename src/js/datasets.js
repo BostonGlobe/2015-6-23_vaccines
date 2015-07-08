@@ -21,7 +21,7 @@ var possibilities = [
 	''
 ];
 
-var width = window.outerWidth;
+var width = window.innerWidth;
 var highlight;
 if (width > 610) {
 	highlight = _.take(possibilities, 30);

@@ -6,6 +6,8 @@ var _ = require('lodash');
 var globeIframe = require('globe-iframe-resizer');
 var sceneMaker = require('./sceneMaker');
 var sceneDefinitions = require('./sceneDefinitions');
+var datasets = require('./datasets');
+var DOMutil = require('./DOMutil.js');
 
 // Make pym resize parent window.
 var onPymParentResize = function() {};
@@ -29,8 +31,64 @@ setTimeout(function() {
 
 }, 2000);
 
+// Make town by town tables.
+function makeTownTables() {
 
+	var townsHtml = _(datasets.schools)
+		.groupBy('city')
+		.map(function(d, i) {
 
+			var schools = _(d)
+				.sortBy('exemption')
+				.map(function(a, b) {
+					return `
+						<tr>
+							<td>${DOMutil.titleCase(a.school)}</td>
+							<td>${a.exemption}%</td>
+						</tr>
+					`;
+				})
+				.value()
+				.join('');
+
+			var table = `
+				<table>
+					<caption>${DOMutil.titleCase(i)}</caption>
+					<thead>
+						<tr>
+							<th>School</th>
+							<th>Exemption rate</th>
+						</tr>
+					</thead>
+					<tbody>
+						${schools}
+					</tbody>
+				</table>
+			`;
+
+			return table;
+		})
+		.value()
+		.join('');
+
+	var towns = document.querySelector('.towns');
+	towns.innerHTML = townsHtml;
+
+	document.querySelector('button.show-schools').addEventListener('click', function(e) {
+
+		if (this.innerHTML.startsWith('See')) {
+			
+			DOMutil.removeClass(towns, 'hide');
+			this.innerHTML = 'Hide town-by-town schools';
+
+		} else {
+
+			DOMutil.addClass(towns, 'hide');
+			this.innerHTML = 'See town-by-town schools';
+		}
+	});
+}
+makeTownTables();
 
 
 

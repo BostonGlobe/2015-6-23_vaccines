@@ -38,11 +38,16 @@ apply_mq_cache()
       for $block in $blocks
         {$block}
 
+h1
+	font-family $benton
+	margin-bottom 0.5em
+
 .hide
 	display none
 
 .scene-maker.container
 	position relative
+	margin-top 1em
 	
 	.scene-maker.chatter
 		position absolute
@@ -77,8 +82,11 @@ apply_mq_cache()
 
 			&[data-step='2']
 				top 55%
-				left 5%
-				width 50%
+				left 0
+				width 55%
+				+mq('bp-1')
+					left 5%
+					width 50%
 				+mq('bp-2')
 					top 60%
 					width 30%
@@ -99,15 +107,17 @@ apply_mq_cache()
 			.annotation
 				position absolute
 				font-family $sansSerif
-				transform translateY(-100%)
 				line-height 0.75em
-				max-width 5em
-				margin-top -0.5em
-				margin-left -1em
-				background alpha(white, 0.5)
-				padding 0.25em 0.25em 0.1em 0.25em
+				&.label
+					transform translateY(-100%)
+					max-width 5em
+					margin-top -0.5em
+					margin-left -1em
+					background alpha(white, 0.5)
+					padding 0.25em 0.25em 0.1em 0.25em
+				&.axis
+
 				span
-					// text-shadow 0px 0px 0px $colors_map_3
 					&.rate
 						font-weight bold
 					&.school

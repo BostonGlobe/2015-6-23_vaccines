@@ -91,7 +91,7 @@ let chart = chartFactory({
 		// ENTER
 		labels.enter().append('div')
 			.attr({
-				'class': 'annotation'
+				'class': 'annotation label'
 			})
 			.style({
 				top: d => config.attributes.cy(d) + 'px',

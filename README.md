@@ -12,9 +12,9 @@ Please note: do not reproduce Boston Globe logos or fonts without written permis
 - figure out right aspect ratio for various breakpoints
 - add titles on map
 - add titles on histogram
-- add axis labels on histogram
 - add table of towns
 - add easter egg when clicking too fast
+- add note that not all schools are included in the graphic
 
 ## Install
 
