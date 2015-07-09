@@ -67,8 +67,8 @@ function atBeginning() {
 function makeButtons() {
 
 	document.querySelector('.scene-maker.buttons').innerHTML = `
-		<button class='btn previous btn--small btn--secondary btn--disabled' disabled>Previous</button>
-		<button class='btn next     btn--small btn--primary'>Next</button>
+		<button class='btn previous btn--secondary btn--disabled' disabled>Previous</button>
+		<button class='btn next     btn--primary'>Next</button>
 	`;
 }
 

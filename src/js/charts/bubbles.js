@@ -86,7 +86,7 @@ let chart = chartFactory({
 
 		// DATA JOINS
 		var labels = config.annotations.selectAll('div.annotation')
-			.data(_.filter(datasets.schools, {highlight: true}), d => [d.school, d.city].join(''));
+			.data(_(datasets.schools).filter({highlight: true}).sortBy(d => -d.exemption).value(), d => [d.school, d.city].join(''));
 
 		// ENTER
 		labels.enter().append('div')
@@ -98,7 +98,7 @@ let chart = chartFactory({
 				left: d => config.attributes.cx(d) + 'px'
 			})
 			.html((d, i) => `
-				<div><span class='rate iota'>${d.exemption}%${i === 0 ? ' exempt' : ''}</span></div>
+				<div><span class='rate theta'>${d.exemption}%${i === 0 ? ' exempt' : ''}</span></div>
 				<div><span class='school'>${DOMutil.titleCase(d.school)}, ${DOMutil.titleCase(d.city)}</span></div>
 			`);
 	},

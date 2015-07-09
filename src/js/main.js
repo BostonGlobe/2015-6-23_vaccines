@@ -39,6 +39,7 @@ function makeTownTables() {
 		.map(function(d, i) {
 
 			var schools = _(d)
+				.sortBy('school')
 				.sortBy('exemption')
 				.map(function(a, b) {
 					return `
