@@ -4,18 +4,6 @@ This project was generated with [slush-globegraphic](https://github.com/BostonGl
 
 Please note: do not reproduce Boston Globe logos or fonts without written permission.
 
-## TODO
-
-### large map
-- maybe shift x axis ticks by half a unit
-- add map annotations
-- figure out right aspect ratio for various breakpoints
-- add titles on map
-- add titles on histogram
-- add table of towns
-- add easter egg when clicking too fast
-- add note that not all schools are included in the graphic
-
 ## Install
 
 - `npm install`
